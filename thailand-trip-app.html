@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Sabai — Thailand Trip Companion</title>
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000000;
+  --surface:#111111;
+  --surface-2:#181818;
+  --surface-3:#212121;
+  --line:#2a2a2a;
+  --text:#F1EDE4;
+  --text-dim:#9a968d;
+  --text-faint:#5f5c56;
+  --gold:#E3B24C;
+  --gold-dim:#8a6f2e;
+  --orchid:#B487F5;
+  --orchid-dim:#6d4fa3;
+  --jade:#4FBF8B;
+  --coral:#E36B5C;
+  --radius-lg:22px;
+  --radius-md:14px;
+  --radius-sm:9px;
+  --safe-t:env(safe-area-inset-top,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-l:env(safe-area-inset-left,0px);
+  --safe-r:env(safe-area-inset-right,0px);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  /* System fonts first → looks good fully offline even if Google Fonts never loaded */
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  overscroll-behavior:none;
+  -webkit-font-smoothing:antialiased;
+  padding-top:var(--safe-t);
+  padding-bottom:var(--safe-b);
+}
+h1,h2,h3,.display{font-family:Georgia,"Times New Roman",serif;}
+/* When Inter/Fraunces load on first online visit they override via the Google stylesheet */
+::-webkit-scrollbar{display:none;}
+*{scrollbar-width:none;}
+button{font-family:inherit; -webkit-appearance:none; border:none; background:none; color:inherit; cursor:pointer;}
+input,select,textarea{font-family:inherit; color:inherit;}
+a{color:inherit;}
+
+#app{max-width:560px; margin:0 auto; min-height:100vh; position:relative; padding-bottom:calc(86px + var(--safe-b));}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:0; z-index:30;
+  padding:18px 20px 14px;
+  background:linear-gradient(180deg, rgba(0,0,0,.97) 70%, rgba(0,0,0,0));
+  backdrop-filter:blur(6px);
+}
+.topbar .brand{display:flex; align-items:baseline; justify-content:space-between;}
+.topbar .brand h1{font-size:22px; font-weight:600; margin:0; letter-spacing:.2px;}
+.topbar .brand .sub{font-size:12px; color:var(--text-dim); font-family:'Inter';}
+
+/* ---------- screens ---------- */
+.screen{display:none; padding:4px 20px 28px; animation:screenIn .38s cubic-bezier(.22,1,.36,1);}
+.screen.active{display:block;}
+@keyframes screenIn{
+  from{opacity:0; transform:translateY(10px) scale(.99);}
+  to{opacity:1; transform:translateY(0) scale(1);}
+}
+
+/* ---------- bottom nav ---------- */
+.navbar{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  padding:10px calc(14px + var(--safe-l)) calc(10px + var(--safe-b)) calc(14px + var(--safe-r));
+  display:flex; justify-content:center;
+}
+.navbar-inner{
+  width:100%; max-width:520px;
+  display:flex; justify-content:space-around; align-items:center;
+  background:rgba(17,17,17,.92);
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:8px 6px;
+  backdrop-filter:blur(14px);
+  box-shadow:0 10px 40px rgba(0,0,0,.6);
+}
+.navbtn{
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:8px 10px; border-radius:16px; color:var(--text-faint);
+  transition:color .25s ease, background .25s ease, transform .2s ease;
+  min-width:46px;
+}
+.navbtn svg{width:21px; height:21px; transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+.navbtn span{font-size:9.5px; font-weight:600; letter-spacing:.2px;}
+.navbtn.active{color:var(--gold); background:rgba(227,178,76,.1);}
+.navbtn.active svg{transform:translateY(-1px) scale(1.08);}
+.navbtn:active{transform:scale(.92);}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--radius-lg); padding:18px;
+  margin-bottom:14px;
+}
+.card-tight{padding:14px 16px; border-radius:var(--radius-md);}
+.section-label{
+  font-size:11px; text-transform:uppercase; letter-spacing:1.2px;
+  color:var(--text-faint); font-weight:600; margin:22px 0 10px;
+}
+.section-label:first-child{margin-top:4px;}
+.row{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+.pill{
+  font-size:11.5px; padding:5px 11px; border-radius:99px; border:1px solid var(--line);
+  color:var(--text-dim); background:var(--surface-2); font-weight:600;
+}
+.pill.on{color:#0d0d0d; background:var(--gold); border-color:var(--gold);}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  padding:13px 18px; border-radius:14px; font-weight:600; font-size:14.5px;
+  background:var(--gold); color:#161200; transition:transform .15s ease, filter .2s ease;
+}
+.btn:active{transform:scale(.96); filter:brightness(.92);}
+.btn.secondary{background:var(--surface-3); color:var(--text); border:1px solid var(--line);}
+.btn.ghost{background:transparent; color:var(--text-dim); border:1px solid var(--line);}
+.btn.danger{background:rgba(227,107,92,.14); color:var(--coral); border:1px solid rgba(227,107,92,.3);}
+.btn-sm{padding:8px 13px; font-size:12.5px; border-radius:11px;}
+.input{
+  width:100%; padding:13px 14px; border-radius:12px; background:var(--surface-2);
+  border:1px solid var(--line); color:var(--text); font-size:15px; outline:none;
+  transition:border-color .2s ease;
+}
+.input:focus{border-color:var(--gold-dim);}
+label.field-label{font-size:12px; color:var(--text-dim); font-weight:600; margin:0 0 6px; display:block;}
+.field{margin-bottom:12px;}
+.divider{height:1px; background:var(--line); margin:14px 0;}
+
+/* fade-in stagger for lists */
+.stagger > *{animation:itemIn .32s cubic-bezier(.22,1,.36,1) backwards;}
+.stagger > *:nth-child(1){animation-delay:.02s}
+.stagger > *:nth-child(2){animation-delay:.05s}
+.stagger > *:nth-child(3){animation-delay:.08s}
+.stagger > *:nth-child(4){animation-delay:.11s}
+.stagger > *:nth-child(5){animation-delay:.14s}
+.stagger > *:nth-child(n+6){animation-delay:.16s}
+@keyframes itemIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+/* ---------- home / clocks ---------- */
+.clockrow{display:flex; gap:10px;}
+.clockcard{
+  flex:1; border-radius:var(--radius-md); padding:16px 14px;
+  background:radial-gradient(120% 140% at 0% 0%, rgba(180,135,245,.16), transparent 60%), var(--surface);
+  border:1px solid var(--line); position:relative; overflow:hidden;
+}
+.clockcard.de{background:radial-gradient(120% 140% at 0% 0%, rgba(227,178,76,.14), transparent 60%), var(--surface);}
+.clockcard .flag{font-size:18px;}
+.clockcard .city{font-size:11px; color:var(--text-dim); font-weight:600; margin-top:6px; text-transform:uppercase; letter-spacing:.6px;}
+.clockcard .time{font-family:'Fraunces'; font-size:29px; font-weight:600; margin-top:2px; font-variant-numeric:tabular-nums;}
+.clockcard .date{font-size:11px; color:var(--text-faint); margin-top:2px;}
+.diffbadge{
+  text-align:center; font-size:12px; color:var(--gold); font-weight:600; margin-top:10px;
+  padding:7px; border-radius:10px; background:rgba(227,178,76,.08); border:1px solid rgba(227,178,76,.18);
+}
+
+.quote-card{
+  border-radius:var(--radius-lg); padding:22px 20px;
+  background:linear-gradient(160deg, #17131f, #0d0b12 70%);
+  border:1px solid #2b2438;
+  position:relative;
+}
+.quote-card .mark{font-family:'Fraunces'; font-size:40px; color:var(--orchid); opacity:.5; line-height:.4; margin-bottom:6px; display:block;}
+.quote-card p{font-family:'Fraunces'; font-size:17px; line-height:1.5; margin:0 0 8px; font-weight:500;}
+.quote-card .src{font-size:12px; color:var(--text-dim);}
+
+.stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.stat-box{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:14px;}
+.stat-box .num{font-family:'Fraunces'; font-size:22px; font-weight:600;}
+.stat-box .lbl{font-size:11px; color:var(--text-dim); margin-top:2px;}
+
+/* ---------- converter ---------- */
+.conv-box{display:flex; align-items:center; gap:10px;}
+.conv-input{flex:1;}
+.conv-swap{
+  width:38px; height:38px; border-radius:50%; background:var(--surface-3); border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.conv-swap:active{transform:rotate(180deg) scale(.92);}
+.ref-table{width:100%; border-collapse:collapse; margin-top:4px;}
+.ref-table td{padding:9px 4px; border-bottom:1px solid var(--line); font-size:14px;}
+.ref-table td:last-child{text-align:right; color:var(--text-dim); font-variant-numeric:tabular-nums;}
+
+/* ---------- phrasebook ---------- */
+.cat-scroll{display:flex; gap:8px; overflow-x:auto; padding:2px 0 14px; -webkit-overflow-scrolling:touch;}
+.cat-scroll .pill{white-space:nowrap; flex-shrink:0;}
+.phrase-item{
+  padding:13px 14px; border-radius:var(--radius-md); background:var(--surface); border:1px solid var(--line);
+  margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; gap:10px;
+}
+.phrase-item .eng{font-size:14.5px; font-weight:600;}
+.phrase-item .thai{font-family:'Fraunces'; color:var(--gold); font-size:15.5px; margin-top:3px;}
+.phrase-item .tone{font-size:11.5px; color:var(--text-faint); margin-top:3px;}
+.fav-btn{flex-shrink:0; width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:50%;}
+.fav-btn svg{width:19px; height:19px; transition:transform .25s cubic-bezier(.34,1.56,.64,1);}
+.fav-btn.active svg{transform:scale(1.15);}
+
+/* ---------- expenses ---------- */
+.exp-item{
+  padding:13px 14px; border-radius:var(--radius-md); background:var(--surface); border:1px solid var(--line);
+  margin-bottom:8px; display:flex; align-items:center; gap:12px;
+}
+.exp-icon{
+  width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+  font-size:17px; flex-shrink:0; background:var(--surface-3);
+}
+.exp-mid{flex:1; min-width:0;}
+.exp-mid .t1{font-size:14.5px; font-weight:600; display:flex; align-items:center; gap:6px;}
+.exp-mid .t2{font-size:11.5px; color:var(--text-dim); margin-top:2px;}
+.exp-amt{text-align:right; flex-shrink:0;}
+.exp-amt .a1{font-size:15px; font-weight:700; font-variant-numeric:tabular-nums;}
+.exp-amt .a2{font-size:10.5px; color:var(--text-faint);}
+.dot{width:6px; height:6px; border-radius:50%; flex-shrink:0;}
+.dot.upcoming{background:var(--coral);}
+.dot.paid{background:var(--jade);}
+
+/* ---------- calendar ---------- */
+.cal-grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px; margin-top:8px; width:100%;}
+.cal-dow{text-align:center; font-size:10.5px; color:var(--text-faint); font-weight:600; padding-bottom:4px; min-width:0;}
+.cal-day{
+  aspect-ratio:1; border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:var(--surface-2); font-size:13px; position:relative; border:1px solid transparent; transition:transform .15s ease;
+  min-width:0; min-height:0; width:100%;
+}
+.cal-day.empty{background:transparent;}
+.cal-day.today{border-color:var(--gold);}
+.cal-day.has-event{background:rgba(180,135,245,.12);}
+.cal-day:active{transform:scale(.9);}
+.cal-day .dots{position:absolute; bottom:4px; display:flex; gap:2px;}
+.cal-day .dots span{width:4px; height:4px; border-radius:50%;}
+.event-item{
+  padding:12px 14px; border-radius:var(--radius-md); background:var(--surface); border:1px solid var(--line);
+  margin-bottom:8px; display:flex; align-items:center; gap:12px;
+}
+
+/* ---------- photos ---------- */
+.photo-day{margin-bottom:20px;}
+.photo-day .pd-label{font-size:12.5px; font-weight:700; color:var(--text-dim); margin-bottom:8px;}
+.photo-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:6px;}
+.photo-thumb{aspect-ratio:1; border-radius:12px; overflow:hidden; background:var(--surface-2); position:relative;}
+.photo-thumb img{width:100%; height:100%; object-fit:cover;}
+.photo-thumb .rm{position:absolute; top:4px; right:4px; width:22px; height:22px; border-radius:50%; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center;}
+.add-photo-tile{
+  aspect-ratio:1; border-radius:12px; border:1.5px dashed var(--line); display:flex; align-items:center; justify-content:center;
+  color:var(--text-faint); font-size:26px;
+}
+
+/* ---------- modal ---------- */
+.modal-backdrop{
+  position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:60; display:none;
+  align-items:flex-end; backdrop-filter:blur(3px);
+}
+.modal-backdrop.active{display:flex; animation:fadeBg .25s ease;}
+@keyframes fadeBg{from{opacity:0} to{opacity:1}}
+.modal-sheet{
+  width:100%; max-width:560px; margin:0 auto; background:var(--surface); border:1px solid var(--line);
+  border-bottom:none; border-radius:26px 26px 0 0; padding:20px 20px calc(24px + var(--safe-b));
+  max-height:86vh; overflow-y:auto; animation:sheetUp .32s cubic-bezier(.22,1,.36,1);
+}
+@keyframes sheetUp{from{transform:translateY(100%)} to{transform:translateY(0)}}
+.sheet-handle{width:36px; height:4px; border-radius:2px; background:var(--line); margin:0 auto 16px;}
+.modal-title{font-size:18px; font-weight:600; margin:0 0 16px;}
+
+/* ---------- summary ---------- */
+.summary-hero{
+  border-radius:var(--radius-lg); padding:28px 22px; text-align:center;
+  background:linear-gradient(160deg,#1c1508,#0d0b12 75%); border:1px solid #3a2c10; margin-bottom:16px;
+}
+.summary-hero .big{font-family:'Fraunces'; font-size:34px; font-weight:700; color:var(--gold);}
+.summary-hero .cap{font-size:12px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-top:4px;}
+.bar-chart{display:flex; flex-direction:column; gap:10px;}
+.bar-row .lbl-row{display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:5px;}
+.bar-track{height:11px; background:var(--surface-2); border-radius:6px; overflow:hidden;}
+.bar-fill{height:100%; border-radius:6px; width:0%; transition:width 1.1s cubic-bezier(.16,1,.3,1);}
+.highlight-row{display:flex; gap:10px; margin-top:14px;}
+.hi-card{flex:1; border-radius:var(--radius-md); padding:14px; border:1px solid var(--line);}
+.hi-card.max{background:rgba(227,107,92,.09); border-color:rgba(227,107,92,.25);}
+.hi-card.min{background:rgba(79,191,139,.09); border-color:rgba(79,191,139,.25);}
+.hi-card .lbl{font-size:10.5px; text-transform:uppercase; letter-spacing:.6px; color:var(--text-dim);}
+.hi-card .v{font-family:'Fraunces'; font-size:17px; margin-top:3px; font-weight:600;}
+
+.slideshow{position:relative; border-radius:var(--radius-lg); overflow:hidden; aspect-ratio:4/5; background:var(--surface-2); border:1px solid var(--line);}
+.slideshow img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .7s ease;}
+.slideshow img.show{opacity:1;}
+.slideshow .cap{position:absolute; left:0; right:0; bottom:0; padding:16px; background:linear-gradient(0deg, rgba(0,0,0,.75), transparent); font-size:13px;}
+.slideshow .nav-btn{
+  position:absolute; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%;
+  background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; z-index:5;
+}
+.slideshow .nav-btn.prev{left:10px;} .slideshow .nav-btn.next{right:10px;}
+.slideshow .dots-row{position:absolute; top:12px; left:0; right:0; display:flex; gap:4px; padding:0 12px; z-index:5;}
+.slideshow .dots-row .seg{flex:1; height:2.5px; background:rgba(255,255,255,.25); border-radius:2px; overflow:hidden;}
+.slideshow .dots-row .seg i{display:block; height:100%; width:0%; background:#fff;}
+.slideshow .dots-row .seg.done i{width:100%;}
+.slideshow .dots-row .seg.active i{width:0%; animation:segFill 3.2s linear forwards;}
+@keyframes segFill{to{width:100%;}}
+
+/* ---------- empty state ---------- */
+.empty{text-align:center; padding:34px 10px; color:var(--text-faint);}
+.empty .ic{font-size:30px; margin-bottom:8px;}
+.empty .t{font-size:13.5px; color:var(--text-dim); font-weight:600;}
+.empty .s{font-size:12px; margin-top:3px;}
+
+/* toast */
+#toast{
+  position:fixed; left:50%; bottom:calc(100px + var(--safe-b)); transform:translateX(-50%) translateY(20px);
+  background:#1c1c1c; border:1px solid var(--line); color:var(--text); padding:11px 18px; border-radius:14px;
+  font-size:13px; z-index:100; opacity:0; pointer-events:none; transition:opacity .3s ease, transform .3s ease;
+  box-shadow:0 8px 30px rgba(0,0,0,.5);
+}
+#toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+.search-wrap{position:relative; margin-bottom:6px;}
+.search-wrap svg{position:absolute; left:14px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--text-faint);}
+.search-wrap input{padding-left:38px;}
+
+.unit-wrap{position:relative;}
+.unit-wrap input{padding-right:56px;}
+.unit-badge{
+  position:absolute; right:6px; top:50%; transform:translateY(-50%);
+  font-size:11px; font-weight:700; letter-spacing:.3px; color:var(--text-dim);
+  background:var(--surface-3); border:1px solid var(--line); border-radius:8px;
+  padding:5px 8px; pointer-events:none;
+}
+.empty .ic svg{width:30px; height:30px; color:var(--text-faint); stroke-width:1.6;}
+.add-photo-cta{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  width:100%; padding:15px; border-radius:16px; background:var(--gold); color:#161200;
+  font-weight:700; font-size:14.5px; margin-bottom:16px; transition:transform .15s ease, filter .2s ease;
+}
+.add-photo-cta:active{transform:scale(.97); filter:brightness(.93);}
+.add-photo-cta svg{width:18px; height:18px;}
+
+.icon-btn{width:38px; height:38px; border-radius:12px; background:var(--surface-2); border:1px solid var(--line); display:flex; align-items:center; justify-content:center;}
+.icon-btn svg{width:18px; height:18px;}
+.fab{
+  position:fixed; right:calc(22px + var(--safe-r)); bottom:calc(102px + var(--safe-b)); z-index:35;
+  width:56px; height:56px; border-radius:50%; background:var(--gold); color:#161200;
+  display:flex; align-items:center; justify-content:center; box-shadow:0 10px 26px rgba(227,178,76,.35);
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1);
+}
+.fab:active{transform:scale(.88) rotate(-8deg);}
+.fab svg{width:26px; height:26px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <h1 id="topbar-title">Sabai</h1>
+      <span class="sub" id="topbar-sub">Thailand trip companion</span>
+    </div>
+  </div>
+
+  <!-- ============ HOME ============ -->
+  <section class="screen active" data-screen="home">
+    <div class="clockrow">
+      <div class="clockcard th">
+        <div class="flag">🇹🇭</div>
+        <div class="city">Bangkok · ICT</div>
+        <div class="time" id="clock-th">--:--:--</div>
+        <div class="date" id="date-th">—</div>
+      </div>
+      <div class="clockcard de">
+        <div class="flag">🇩🇪</div>
+        <div class="city" id="de-city-label">Germany · CET</div>
+        <div class="time" id="clock-de">--:--:--</div>
+        <div class="date" id="date-de">—</div>
+      </div>
+    </div>
+    <div class="diffbadge" id="tz-diff">Thailand is +6h ahead</div>
+
+    <div class="section-label">Today</div>
+    <div class="quote-card" id="quote-card">
+      <span class="mark">"</span>
+      <p id="quote-text">Loading…</p>
+      <div class="src" id="quote-src"></div>
+    </div>
+
+    <div class="section-label">Trip at a glance</div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="num" id="home-spend-thb">฿0</div><div class="lbl">Spent so far</div></div>
+      <div class="stat-box"><div class="num" id="home-upcoming">0</div><div class="lbl">Upcoming bills</div></div>
+      <div class="stat-box"><div class="num" id="home-photos">0</div><div class="lbl">Photos logged</div></div>
+      <div class="stat-box"><div class="num" id="home-days">0</div><div class="lbl">Days into trip</div></div>
+    </div>
+
+    <div class="section-label">Quick convert</div>
+    <div class="card card-tight">
+      <div class="conv-box">
+        <div class="conv-input unit-wrap">
+          <input class="input" id="home-thb" inputmode="decimal" placeholder="0" value="1000">
+          <span class="unit-badge">THB</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-faint);">≈</div>
+        <div class="conv-input unit-wrap">
+          <input class="input" id="home-eur" inputmode="decimal" placeholder="0" readonly>
+          <span class="unit-badge">EUR</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONVERTER ============ -->
+  <section class="screen" data-screen="convert">
+    <div class="section-label">Exchange rate</div>
+    <div class="card">
+      <div class="row">
+        <div>
+          <div style="font-size:13px;color:var(--text-dim);">1 EUR =</div>
+          <div style="font-family:'Fraunces';font-size:22px;font-weight:600;" id="rate-display">38.50 THB</div>
+        </div>
+        <button class="btn secondary btn-sm" id="edit-rate-btn">Edit rate</button>
+      </div>
+      <div id="rate-edit-box" style="display:none; margin-top:14px;">
+        <div class="field">
+          <label class="field-label">THB per 1 EUR</label>
+          <input class="input" id="rate-input" inputmode="decimal">
+        </div>
+        <div class="row" style="gap:8px;">
+          <button class="btn secondary btn-sm" style="flex:1" id="rate-cancel">Cancel</button>
+          <button class="btn btn-sm" style="flex:1" id="rate-save">Save rate</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Convert</div>
+    <div class="card">
+      <div class="field">
+        <label class="field-label">Thai Baht (THB)</label>
+        <div class="unit-wrap">
+          <input class="input" id="conv-thb" inputmode="decimal" placeholder="0">
+          <span class="unit-badge">THB</span>
+        </div>
+      </div>
+      <div class="row" style="justify-content:center; margin:2px 0 10px;">
+        <div class="conv-swap" id="conv-swap-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3v12M17 15l4-4M17 15l-4-4M7 21V9M7 9l4 4M7 9l-4 4"/></svg>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label class="field-label">Euro (EUR)</label>
+        <div class="unit-wrap">
+          <input class="input" id="conv-eur" inputmode="decimal" placeholder="0">
+          <span class="unit-badge">EUR</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Quick reference</div>
+    <div class="card card-tight">
+      <table class="ref-table" id="ref-table"></table>
+    </div>
+  </section>
+
+  <!-- ============ PHRASEBOOK ============ -->
+  <section class="screen" data-screen="phrases">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input class="input" id="phrase-search" placeholder="Search phrases…">
+    </div>
+    <div class="cat-scroll" id="phrase-cats"></div>
+    <div id="phrase-list" class="stagger"></div>
+  </section>
+
+  <!-- ============ EXPENSES ============ -->
+  <section class="screen" data-screen="expenses">
+    <div class="stat-grid" style="margin-bottom:14px;">
+      <div class="stat-box"><div class="num" id="exp-total-thb">฿0</div><div class="lbl">Total spent (THB)</div></div>
+      <div class="stat-box"><div class="num" id="exp-total-eur">€0</div><div class="lbl">Total spent (EUR)</div></div>
+      <div class="stat-box"><div class="num" id="exp-paid-count">0</div><div class="lbl">Paid entries</div></div>
+      <div class="stat-box"><div class="num" id="exp-upcoming-amt">฿0</div><div class="lbl">Still owed</div></div>
+    </div>
+    <div class="section-label">By category</div>
+    <div class="card card-tight" id="exp-cat-breakdown"></div>
+    <div class="section-label" style="display:flex; justify-content:space-between; align-items:center;">
+      <span>All expenses</span>
+    </div>
+    <div id="exp-list"></div>
+  </section>
+
+  <!-- ============ CALENDAR ============ -->
+  <section class="screen" data-screen="calendar">
+    <div class="card">
+      <div class="row">
+        <button class="icon-btn" id="cal-prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div style="font-family:'Fraunces'; font-size:17px; font-weight:600;" id="cal-month-label">—</div>
+        <button class="icon-btn" id="cal-next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+    <div class="section-label">Events</div>
+    <div id="cal-event-list"></div>
+  </section>
+
+  <!-- ============ PHOTOS ============ -->
+  <section class="screen" data-screen="photos">
+    <input type="file" id="photo-input" accept="image/*" multiple capture="environment" style="display:none;">
+    <div id="photo-timeline"></div>
+  </section>
+
+  <!-- ============ SUMMARY ============ -->
+  <section class="screen" data-screen="summary">
+    <div class="summary-hero">
+      <div class="big" id="sum-total">฿0</div>
+      <div class="cap">Total trip spend</div>
+    </div>
+
+    <div class="section-label">Spending by category</div>
+    <div class="card" id="sum-chart-card">
+      <div class="bar-chart" id="sum-bar-chart"></div>
+    </div>
+
+    <div class="highlight-row">
+      <div class="hi-card max">
+        <div class="lbl">Highest spend day</div>
+        <div class="v" id="sum-max-day">—</div>
+      </div>
+      <div class="hi-card min">
+        <div class="lbl">Lowest spend day</div>
+        <div class="v" id="sum-min-day">—</div>
+      </div>
+    </div>
+    <div class="highlight-row">
+      <div class="hi-card max">
+        <div class="lbl">Top category</div>
+        <div class="v" id="sum-max-cat">—</div>
+      </div>
+      <div class="hi-card min">
+        <div class="lbl">Lightest category</div>
+        <div class="v" id="sum-min-cat">—</div>
+      </div>
+    </div>
+
+    <div class="section-label">Photo recap</div>
+    <div class="slideshow" id="slideshow">
+      <div class="dots-row" id="slide-dots"></div>
+      <div class="nav-btn prev" id="slide-prev"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+      <div class="nav-btn next" id="slide-next"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+      <div class="cap" id="slide-cap"></div>
+    </div>
+
+    <div class="section-label">Backup</div>
+    <div class="card">
+      <div style="font-size:13px; color:var(--text-dim); margin-bottom:12px;">Export everything — expenses, favorites, calendar, photos — to a JSON file, or restore from a previous export.</div>
+      <div class="row" style="gap:8px;">
+        <button class="btn secondary" style="flex:1" id="export-btn">Export JSON</button>
+        <button class="btn secondary" style="flex:1" id="import-btn">Import JSON</button>
+      </div>
+      <input type="file" id="import-file" accept="application/json" style="display:none;">
+    </div>
+  </section>
+
+  <button class="fab" id="fab-btn" style="display:none;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+
+  <div class="navbar">
+    <div class="navbar-inner">
+      <button class="navbtn active" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Home</span></button>
+      <button class="navbtn" data-nav="convert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3v12M17 15l4-4M17 15l-4-4M7 21V9M7 9l4 4M7 9l-4 4"/></svg><span>Money</span></button>
+      <button class="navbtn" data-nav="phrases"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Phrases</span></button>
+      <button class="navbtn" data-nav="expenses"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg><span>Spend</span></button>
+      <button class="navbtn" data-nav="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span>Cal</span></button>
+      <button class="navbtn" data-nav="photos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-4 4-3-3-6 6"/></svg><span>Photos</span></button>
+      <button class="navbtn" data-nav="summary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span>Recap</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal-sheet" id="modal-sheet"></div>
+</div>
+<div id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* =========================================================
+   DATA MODEL  (schema v1)
+   {
+     version: 1,
+     settings: { thbPerEur: number, germanyTz: "Europe/Berlin" },
+     expenses: [{ id, date:"YYYY-MM-DD", amount, currency:"THB"|"EUR",
+                  amountThb, amountEur, category, paymentMethod,
+                  note, status:"paid"|"upcoming", dueDate|null, createdAt }],
+     calendarEvents: [{ id, date:"YYYY-MM-DD", title, note, type }],
+     photos: [{ id, date:"YYYY-MM-DD", dataUrl, caption, createdAt }],
+     phrasebookFavorites: [phraseId, ...],
+     verseHistory: [{ date:"YYYY-MM-DD", id:number }]
+   }
+   ========================================================= */
+
+const STORAGE_KEY = "sabaiTripData_v1";
+const SCHEMA_VERSION = 1;
+
+function defaultData(){
+  return {
+    version: SCHEMA_VERSION,
+    settings: { thbPerEur: 38.5, germanyTz: "Europe/Berlin" },
+    expenses: [],
+    calendarEvents: [],
+    photos: [],
+    phrasebookFavorites: [],
+    verseHistory: []
+  };
+}
+
+let DATA = loadData();
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return defaultData();
+    const parsed = JSON.parse(raw);
+    const d = Object.assign(defaultData(), parsed);
+    d.settings = Object.assign(defaultData().settings, parsed.settings||{});
+    return d;
+  }catch(e){
+    console.error("load failed", e);
+    return defaultData();
+  }
+}
+function saveData(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+  }catch(e){
+    console.error("save failed", e);
+    toast("Storage full — try removing some photos.");
+  }
+}
+const ICONS = {
+  search: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>`,
+  receipt: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z"/><path d="M9 8h6M9 12h6"/></svg>`,
+  calendar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>`,
+  camera: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z"/><circle cx="12" cy="13" r="3.5"/></svg>`,
+};
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>t.classList.remove("show"), 2400);
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+const screens = document.querySelectorAll(".screen");
+const navbtns = document.querySelectorAll(".navbtn");
+const fab = document.getElementById("fab-btn");
+const topbarTitle = document.getElementById("topbar-title");
+const topbarSub = document.getElementById("topbar-sub");
+
+const SCREEN_META = {
+  home:     {title:"Sabai", sub:"Thailand trip companion", fab:false},
+  convert:  {title:"Money", sub:"EUR ↔ THB converter", fab:false},
+  phrases:  {title:"Phrases", sub:"Everyday spoken Thai", fab:false},
+  expenses: {title:"Spending", sub:"Expenses & bills", fab:true, fabAction:"expense"},
+  calendar: {title:"Calendar", sub:"Trip schedule", fab:true, fabAction:"event"},
+  photos:   {title:"Photos", sub:"Daily log", fab:true, fabAction:"photo"},
+  summary:  {title:"Trip Recap", sub:"End-of-trip summary", fab:false},
+};
+
+function goScreen(name){
+  screens.forEach(s=>s.classList.toggle("active", s.dataset.screen===name));
+  navbtns.forEach(b=>b.classList.toggle("active", b.dataset.nav===name));
+  const meta = SCREEN_META[name];
+  topbarTitle.textContent = meta.title;
+  topbarSub.textContent = meta.sub;
+  fab.style.display = meta.fab ? "flex" : "none";
+  fab.dataset.action = meta.fabAction || "";
+  if(name==="expenses") renderExpenses();
+  if(name==="calendar") renderCalendar();
+  if(name==="photos") renderPhotos();
+  if(name==="summary") renderSummary();
+  if(name==="convert") renderConvertScreen();
+  if(name==="phrases") renderPhraseList();
+  if(name==="home") renderHome();
+  window.scrollTo(0,0);
+}
+navbtns.forEach(b=>b.addEventListener("click", ()=>goScreen(b.dataset.nav)));
+fab.addEventListener("click", ()=>{
+  const a = fab.dataset.action;
+  if(a==="expense") openExpenseModal();
+  if(a==="event") openEventModal(currentCalYear, currentCalMonth, null);
+  if(a==="photo") document.getElementById("photo-input").click();
+});
+
+/* =========================================================
+   MODAL SYSTEM
+   ========================================================= */
+const modalBackdrop = document.getElementById("modal-backdrop");
+const modalSheet = document.getElementById("modal-sheet");
+function openModal(html){
+  modalSheet.innerHTML = '<div class="sheet-handle"></div>' + html;
+  modalBackdrop.classList.add("active");
+}
+function closeModal(){ modalBackdrop.classList.remove("active"); }
+modalBackdrop.addEventListener("click", (e)=>{ if(e.target===modalBackdrop) closeModal(); });
+
+/* =========================================================
+   TIME ZONE WIDGET
+   ========================================================= */
+function pad(n){ return n.toString().padStart(2,"0"); }
+
+function getOffsetMinutes(tz){
+  // offset of tz from UTC, in minutes, at "now"
+  const now = new Date();
+  const dtf = new Intl.DateTimeFormat("en-US", {timeZone: tz, hour12:false,
+    year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"});
+  const parts = dtf.formatToParts(now).reduce((a,p)=>{a[p.type]=p.value; return a;},{});
+  const asUTC = Date.UTC(parts.year, parts.month-1, parts.day, parts.hour===24?0:parts.hour, parts.minute, parts.second);
+  return Math.round((asUTC - now.getTime())/60000);
+}
+
+function updateClocks(){
+  const now = new Date();
+  const thFmt = new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Bangkok",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+  const deFmt = new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Berlin",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+  const thDateFmt = new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Bangkok",weekday:"short",day:"numeric",month:"short"});
+  const deDateFmt = new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Berlin",weekday:"short",day:"numeric",month:"short"});
+
+  document.getElementById("clock-th").textContent = thFmt.format(now);
+  document.getElementById("clock-de").textContent = deFmt.format(now);
+  document.getElementById("date-th").textContent = thDateFmt.format(now);
+  document.getElementById("date-de").textContent = deDateFmt.format(now);
+
+  const thOff = getOffsetMinutes("Asia/Bangkok"); // always +420
+  const deOff = getOffsetMinutes("Europe/Berlin"); // +60 (CET) or +120 (CEST)
+  const diffH = (thOff - deOff) / 60;
+  const isDst = deOff === 120;
+  document.getElementById("de-city-label").textContent = "Germany · " + (isDst ? "CEST" : "CET");
+  document.getElementById("tz-diff").textContent =
+    `Thailand is +${diffH}h ahead of Germany${isDst ? " (German DST active)" : ""}`;
+}
+setInterval(updateClocks, 1000);
+
+/* =========================================================
+   DAILY QUOTE / VERSE
+   ========================================================= */
+const QUOTES = [
+  {t:"The journey of a thousand miles begins with a single step.", s:"Traditional proverb"},
+  {t:"I can do all this through him who gives me strength.", s:"Philippians 4:13"},
+  {t:"Be still, and know that I am God.", s:"Psalm 46:10"},
+  {t:"Not all those who wander are lost.", s:"Old traveller's saying"},
+  {t:"Trust in the Lord with all your heart and lean not on your own understanding.", s:"Proverbs 3:5"},
+  {t:"Collect moments, not things.", s:"Travel wisdom"},
+  {t:"The Lord will guide you always.", s:"Isaiah 58:11"},
+  {t:"Adventure may hurt you, but monotony will kill you.", s:"Unknown"},
+  {t:"Give thanks in all circumstances.", s:"1 Thessalonians 5:18"},
+  {t:"A good traveller has no fixed plans and is not intent on arriving.", s:"Traditional saying"},
+  {t:"Cast all your anxiety on him because he cares for you.", s:"1 Peter 5:7"},
+  {t:"Wherever you go becomes a part of you somehow.", s:"Unknown"},
+  {t:"The Lord is my strength and my shield.", s:"Psalm 28:7"},
+  {t:"Travel far enough, you meet yourself.", s:"Unknown"},
+  {t:"Do not be anxious about anything, but in every situation, by prayer and petition, present your requests to God.", s:"Philippians 4:6"},
+  {t:"Sabai sabai — take it easy, take it slow.", s:"Thai saying"},
+  {t:"For I know the plans I have for you, plans to prosper you and not to harm you.", s:"Jeremiah 29:11"},
+  {t:"Slow down, breathe, and enjoy where you are.", s:"Unknown"},
+  {t:"The heart of the discerning acquires knowledge.", s:"Proverbs 18:15"},
+  {t:"Once a year, go someplace you've never been before.", s:"Travel wisdom"},
+  {t:"Let all that you do be done in love.", s:"1 Corinthians 16:14"},
+  {t:"Small kindness in a new place goes a long way.", s:"Unknown"},
+  {t:"The Lord is good, a refuge in times of trouble.", s:"Nahum 1:7"},
+  {t:"Life is either a daring adventure or nothing at all.", s:"Unknown"},
+  {t:"Commit to the Lord whatever you do, and he will establish your plans.", s:"Proverbs 16:3"},
+  {t:"Every step is a homecoming to somewhere in yourself.", s:"Unknown"},
+  {t:"The Lord your God is with you wherever you go.", s:"Joshua 1:9"},
+  {t:"Take only memories, leave only footprints.", s:"Traditional saying"},
+  {t:"Weeping may stay for the night, but rejoicing comes in the morning.", s:"Psalm 30:5"},
+  {t:"New places, new people, new self.", s:"Unknown"},
+  {t:"The Lord bless you and keep you.", s:"Numbers 6:24"},
+  {t:"Getting lost is just another way of saying going exploring.", s:"Unknown"},
+];
+
+function pickDailyQuote(){
+  const today = todayStr();
+  const existing = DATA.verseHistory.find(v=>v.date===today);
+  if(existing) return QUOTES[existing.id];
+  const prev = DATA.verseHistory.length ? DATA.verseHistory[DATA.verseHistory.length-1] : null;
+  let idx;
+  do{ idx = Math.floor(Math.random()*QUOTES.length); }
+  while(QUOTES.length>1 && prev && idx===prev.id);
+  DATA.verseHistory.push({date:today, id:idx});
+  if(DATA.verseHistory.length>60) DATA.verseHistory = DATA.verseHistory.slice(-60);
+  saveData();
+  return QUOTES[idx];
+}
+function renderQuote(){
+  const q = pickDailyQuote();
+  document.getElementById("quote-text").textContent = q.t;
+  document.getElementById("quote-src").textContent = "— " + q.s;
+}
+
+/* =========================================================
+   CURRENCY CONVERTER
+   ========================================================= */
+function rate(){ return DATA.settings.thbPerEur || 38.5; }
+function thbToEur(thb){ return thb / rate(); }
+function eurToThb(eur){ return eur * rate(); }
+function fmtThb(n){ return "฿" + n.toLocaleString("en-US",{maximumFractionDigits:2}); }
+function fmtEur(n){ return "€" + n.toLocaleString("en-US",{maximumFractionDigits:2}); }
+
+function renderConvertScreen(){
+  document.getElementById("rate-display").textContent = rate().toFixed(2) + " THB";
+  document.getElementById("rate-input").value = rate();
+  const amtsThb = [10,20,50,100,500,1000,2000];
+  const tbl = document.getElementById("ref-table");
+  tbl.innerHTML = amtsThb.map(a=>`<tr><td>฿${a.toLocaleString()}</td><td>${fmtEur(thbToEur(a))}</td></tr>`).join("");
+  document.getElementById("conv-thb").value = "";
+  document.getElementById("conv-eur").value = "";
+}
+document.getElementById("edit-rate-btn").addEventListener("click", ()=>{
+  document.getElementById("rate-edit-box").style.display = "block";
+});
+document.getElementById("rate-cancel").addEventListener("click", ()=>{
+  document.getElementById("rate-edit-box").style.display = "none";
+});
+document.getElementById("rate-save").addEventListener("click", ()=>{
+  const v = parseFloat(document.getElementById("rate-input").value);
+  if(v>0){
+    DATA.settings.thbPerEur = v;
+    saveData();
+    renderConvertScreen();
+    document.getElementById("rate-edit-box").style.display = "none";
+    toast("Exchange rate updated");
+  }
+});
+document.getElementById("conv-thb").addEventListener("input", (e)=>{
+  const v = parseFloat(e.target.value);
+  document.getElementById("conv-eur").value = isNaN(v) ? "" : thbToEur(v).toFixed(2);
+});
+document.getElementById("conv-eur").addEventListener("input", (e)=>{
+  const v = parseFloat(e.target.value);
+  document.getElementById("conv-thb").value = isNaN(v) ? "" : eurToThb(v).toFixed(2);
+});
+document.getElementById("conv-swap-btn").addEventListener("click", ()=>{
+  const a = document.getElementById("conv-thb"), b = document.getElementById("conv-eur");
+  // just triggers a subtle bounce — fields already stay in sync
+  toast("Rate: 1 EUR = " + rate().toFixed(2) + " THB");
+});
+document.getElementById("home-thb").addEventListener("input", (e)=>{
+  const v = parseFloat(e.target.value);
+  document.getElementById("home-eur").value = isNaN(v) ? "" : thbToEur(v).toFixed(2);
+});
+
+/* =========================================================
+   PHRASEBOOK
+   ========================================================= */
+const PHRASES = [
+  // Greetings
+  {id:1,cat:"Greetings",en:"Hello",th:"sa-wat-dee (krap/ka)",tone:"Add khrap (m) / kha (f) at the end, always"},
+  {id:2,cat:"Greetings",en:"How are you?",th:"sa-bai-dee mai",tone:"Rising tone on 'mai'"},
+  {id:3,cat:"Greetings",en:"I'm fine",th:"sa-bai-dee",tone:""},
+  {id:4,cat:"Greetings",en:"Goodbye",th:"la gòn ná",tone:""},
+  {id:5,cat:"Greetings",en:"Nice to meet you",th:"yin-dee tee dai roo-jak",tone:""},
+  {id:6,cat:"Greetings",en:"What's your name?",th:"khun cheu a-rai",tone:""},
+  {id:7,cat:"Greetings",en:"My name is…",th:"chan/phom cheu…",tone:"chan (f) / phom (m)"},
+  {id:8,cat:"Greetings",en:"See you later",th:"lae gan mai",tone:""},
+  {id:9,cat:"Greetings",en:"Good morning",th:"a-run sa-wat",tone:"Formal / written more than spoken"},
+  {id:9001,cat:"Greetings",en:"Good night",th:"raa-tree sa-wat",tone:""},
+  {id:9002,cat:"Greetings",en:"Where are you from?",th:"khun maa jaak prathet a-rai",tone:""},
+  {id:9003,cat:"Greetings",en:"I'm from Germany",th:"chan/phom maa jaak yer-ra-mun",tone:""},
+  {id:9004,cat:"Greetings",en:"How old are you?",th:"khun aa-yu tao-rai",tone:"Can feel blunt with strangers — use casually"},
+  {id:9005,cat:"Greetings",en:"Long time no see",th:"mai jer gan naan laeo",tone:""},
+  // Food / Ordering
+  {id:10,cat:"Food & Ordering",en:"I would like…",th:"khor… noi",tone:""},
+  {id:11,cat:"Food & Ordering",en:"The menu, please",th:"khor may-noo noi",tone:""},
+  {id:12,cat:"Food & Ordering",en:"Not spicy",th:"mai phet",tone:"Falling tone on 'phet'"},
+  {id:13,cat:"Food & Ordering",en:"A little spicy",th:"phet nit-noi",tone:""},
+  {id:14,cat:"Food & Ordering",en:"Delicious",th:"a-roi",tone:""},
+  {id:15,cat:"Food & Ordering",en:"Check, please",th:"check bin noi",tone:""},
+  {id:16,cat:"Food & Ordering",en:"No meat / vegetarian",th:"mangsawirat",tone:""},
+  {id:17,cat:"Food & Ordering",en:"Water, please",th:"khor nam noi",tone:""},
+  {id:18,cat:"Food & Ordering",en:"No ice",th:"mai sai naam-kaeng",tone:""},
+  {id:19,cat:"Food & Ordering",en:"I'm allergic to…",th:"chan phae…",tone:""},
+  {id:20,cat:"Food & Ordering",en:"For here / to go",th:"than tee nee / sai thoong",tone:""},
+  {id:9010,cat:"Food & Ordering",en:"One more, please",th:"khor eek an noi",tone:""},
+  {id:9011,cat:"Food & Ordering",en:"I'm full",th:"im laeo",tone:""},
+  {id:9012,cat:"Food & Ordering",en:"I'm hungry",th:"hiu khao",tone:""},
+  {id:9013,cat:"Food & Ordering",en:"Fried rice",th:"khao pad",tone:""},
+  {id:9014,cat:"Food & Ordering",en:"Pad Thai",th:"phat thai",tone:""},
+  {id:9015,cat:"Food & Ordering",en:"Green curry",th:"gaeng keeo waan",tone:""},
+  {id:9016,cat:"Food & Ordering",en:"Sticky rice",th:"khao niaow",tone:""},
+  {id:9017,cat:"Food & Ordering",en:"Iced coffee",th:"gaa-fae yen",tone:""},
+  {id:9018,cat:"Food & Ordering",en:"No sugar",th:"mai sai naam-taan",tone:""},
+  {id:9019,cat:"Food & Ordering",en:"No coriander / cilantro",th:"mai sai pak-chee",tone:"Very useful — coriander is everywhere"},
+  {id:9020,cat:"Food & Ordering",en:"Can I get it to go?",th:"sai thoong dai mai",tone:""},
+  {id:9021,cat:"Food & Ordering",en:"Is this dish spicy?",th:"an nee phet mai",tone:""},
+  {id:9022,cat:"Food & Ordering",en:"Do you have an English menu?",th:"mee may-noo pha-saa ang-grit mai",tone:""},
+  // Directions
+  {id:30,cat:"Directions",en:"Where is…?",th:"…yoo tee nai",tone:""},
+  {id:31,cat:"Directions",en:"Turn left",th:"leeo sai",tone:""},
+  {id:32,cat:"Directions",en:"Turn right",th:"leeo khwa",tone:""},
+  {id:33,cat:"Directions",en:"Go straight",th:"trong pai",tone:""},
+  {id:34,cat:"Directions",en:"Stop here",th:"jort tee nee",tone:""},
+  {id:35,cat:"Directions",en:"How far?",th:"glai mai",tone:""},
+  {id:36,cat:"Directions",en:"Near / far",th:"glai / glai (different tones!)",tone:"near = low tone, far = falling — listen closely"},
+  {id:37,cat:"Directions",en:"Airport",th:"sa-nam bin",tone:""},
+  {id:38,cat:"Directions",en:"Train station",th:"sa-thaa-nee rot fai",tone:""},
+  {id:39,cat:"Directions",en:"Bus stop",th:"pai rot may",tone:""},
+  {id:9030,cat:"Directions",en:"Which way to the beach?",th:"chai-haat pai thaang nai",tone:""},
+  {id:9031,cat:"Directions",en:"Is it walkable?",th:"deun pai dai mai",tone:""},
+  {id:9032,cat:"Directions",en:"Left / right (as nouns)",th:"sai / khwa",tone:""},
+  {id:9033,cat:"Directions",en:"North / south / east / west",th:"neua / tai / ta-wan-ork / ta-wan-tok",tone:""},
+  {id:9034,cat:"Directions",en:"Crossing / bridge",th:"thaang-kham / sa-phaan",tone:""},
+  // Numbers
+  {id:50,cat:"Numbers",en:"One",th:"neung",tone:""},
+  {id:51,cat:"Numbers",en:"Two",th:"song",tone:""},
+  {id:52,cat:"Numbers",en:"Three",th:"saam",tone:""},
+  {id:53,cat:"Numbers",en:"Four",th:"see",tone:""},
+  {id:54,cat:"Numbers",en:"Five",th:"haa",tone:""},
+  {id:9050,cat:"Numbers",en:"Six",th:"hok",tone:""},
+  {id:9051,cat:"Numbers",en:"Seven",th:"jet",tone:""},
+  {id:9052,cat:"Numbers",en:"Eight",th:"paet",tone:""},
+  {id:9053,cat:"Numbers",en:"Nine",th:"kao",tone:""},
+  {id:55,cat:"Numbers",en:"Ten",th:"sip",tone:""},
+  {id:9054,cat:"Numbers",en:"Eleven",th:"sip-et",tone:""},
+  {id:9055,cat:"Numbers",en:"Fifteen",th:"sip-haa",tone:""},
+  {id:56,cat:"Numbers",en:"Twenty",th:"yee-sip",tone:""},
+  {id:9056,cat:"Numbers",en:"Thirty",th:"saam-sip",tone:""},
+  {id:9057,cat:"Numbers",en:"Fifty",th:"haa-sip",tone:""},
+  {id:57,cat:"Numbers",en:"Hundred",th:"roi",tone:""},
+  {id:58,cat:"Numbers",en:"Thousand",th:"phan",tone:""},
+  {id:9058,cat:"Numbers",en:"Ten thousand",th:"meun",tone:""},
+  {id:59,cat:"Numbers",en:"How much?",th:"tao rai",tone:""},
+  {id:9059,cat:"Numbers",en:"First / second / third",th:"tee neung / tee song / tee saam",tone:""},
+  // Bargaining
+  {id:70,cat:"Bargaining",en:"Can you lower the price?",th:"lot noi dai mai",tone:""},
+  {id:71,cat:"Bargaining",en:"Too expensive",th:"phaeng pai",tone:""},
+  {id:72,cat:"Bargaining",en:"Can you go cheaper?",th:"lot dai mai",tone:""},
+  {id:73,cat:"Bargaining",en:"Final price?",th:"raa-kaa sut-thai tao-rai",tone:""},
+  {id:74,cat:"Bargaining",en:"I'll take it",th:"ao un nee",tone:""},
+  {id:75,cat:"Bargaining",en:"Just looking, thanks",th:"khor doo gorn",tone:""},
+  {id:9070,cat:"Bargaining",en:"Do you have a discount?",th:"mee suan-lot mai",tone:""},
+  {id:9071,cat:"Bargaining",en:"Cheap",th:"thuuk",tone:""},
+  {id:9072,cat:"Bargaining",en:"I'll think about it",th:"khor kit doo gorn",tone:"Polite way to walk away"},
+  {id:9073,cat:"Bargaining",en:"Can I pay by card?",th:"jaai duay bat dai mai",tone:""},
+  {id:9074,cat:"Bargaining",en:"Do you have change?",th:"mee ngern thon mai",tone:""},
+  // Emergencies
+  {id:90,cat:"Emergencies",en:"Help!",th:"chuay duay",tone:"Urgent, falling tone"},
+  {id:91,cat:"Emergencies",en:"I need a doctor",th:"chan/phom tong-gaan mor",tone:""},
+  {id:92,cat:"Emergencies",en:"Call the police",th:"riak dtam-ruat noi",tone:""},
+  {id:93,cat:"Emergencies",en:"I'm lost",th:"chan/phom lohng thaang",tone:""},
+  {id:94,cat:"Emergencies",en:"Hospital",th:"rong pha-yaa-baan",tone:""},
+  {id:95,cat:"Emergencies",en:"I don't feel well",th:"mai sabai",tone:""},
+  {id:96,cat:"Emergencies",en:"My phone / bag was stolen",th:"tho-ra-sap/gra-pao chan tuk kamoi",tone:""},
+  {id:9090,cat:"Emergencies",en:"Emergency number (Tourist Police)",th:"1155",tone:"Free, English-speaking tourist police line"},
+  {id:9091,cat:"Emergencies",en:"Fire!",th:"fai mai",tone:""},
+  {id:9092,cat:"Emergencies",en:"Watch out!",th:"ra-wang",tone:""},
+  {id:9093,cat:"Emergencies",en:"I need to go to the embassy",th:"chan/phom tong-gaan pai sa-thaan thoot",tone:""},
+  {id:9094,cat:"Emergencies",en:"Please take me to the hospital",th:"pha chan/phom pai rong pha-yaa-baan noi",tone:""},
+  // Politeness / small talk
+  {id:110,cat:"Politeness",en:"Thank you",th:"khop khun (khrap/kha)",tone:""},
+  {id:111,cat:"Politeness",en:"Please",th:"ga-ru-naa",tone:""},
+  {id:112,cat:"Politeness",en:"Sorry / excuse me",th:"khor thot",tone:""},
+  {id:113,cat:"Politeness",en:"Yes",th:"chai",tone:""},
+  {id:114,cat:"Politeness",en:"No",th:"mai chai",tone:""},
+  {id:115,cat:"Politeness",en:"No problem",th:"mai pen rai",tone:"The classic Thai phrase — 'it's all good'"},
+  {id:116,cat:"Politeness",en:"Do you speak English?",th:"khun poot pha-saa ang-grit dai mai",tone:""},
+  {id:117,cat:"Politeness",en:"I don't understand",th:"chan/phom mai khao jai",tone:""},
+  {id:118,cat:"Politeness",en:"Cheers! (drinking)",th:"chok dee",tone:""},
+  {id:9110,cat:"Politeness",en:"Can you say that again?",th:"phuut eek tee dai mai",tone:""},
+  {id:9111,cat:"Politeness",en:"Slower, please",th:"phuut chaa chaa noi",tone:""},
+  {id:9112,cat:"Politeness",en:"That's okay / never mind",th:"mai pen rai",tone:""},
+  {id:9113,cat:"Politeness",en:"Congratulations",th:"khor sa-daeng khwaam yin-dee",tone:""},
+  {id:9114,cat:"Politeness",en:"Happy birthday",th:"suk-san wan-geut",tone:""},
+  {id:9115,cat:"Politeness",en:"Welcome (to greet)",th:"yin-dee ton-rap",tone:""},
+  // Transport
+  {id:9200,cat:"Transport",en:"How much to…?",th:"pai… tao-rai",tone:""},
+  {id:9201,cat:"Transport",en:"Please use the meter",th:"khor bpert meter duay",tone:"Important for Bangkok taxis"},
+  {id:9202,cat:"Transport",en:"I want to go to…",th:"chan/phom yaak pai…",tone:""},
+  {id:9203,cat:"Transport",en:"Please wait for me",th:"ror chan/phom noi",tone:""},
+  {id:9204,cat:"Transport",en:"Can you drop me here?",th:"jort tee nee dai mai",tone:""},
+  {id:9205,cat:"Transport",en:"Tuk-tuk",th:"took-took",tone:""},
+  {id:9206,cat:"Transport",en:"Motorbike taxi",th:"win motor-sai",tone:""},
+  {id:9207,cat:"Transport",en:"Ferry / boat",th:"reua",tone:""},
+  {id:9208,cat:"Transport",en:"Ticket",th:"tua",tone:""},
+  {id:9209,cat:"Transport",en:"What time does it leave?",th:"ork gee mong",tone:""},
+  {id:9210,cat:"Transport",en:"Is this seat taken?",th:"tee nang nee mee khon nang mai",tone:""},
+  {id:9211,cat:"Transport",en:"I get motion sick",th:"chan/phom mao rot",tone:""},
+  // Shopping
+  {id:9300,cat:"Shopping",en:"Do you have this in a different size?",th:"mee size uen mai",tone:""},
+  {id:9301,cat:"Shopping",en:"Can I try it on?",th:"lorng sai dai mai",tone:""},
+  {id:9302,cat:"Shopping",en:"Too big / too small",th:"yai pai / lek pai",tone:""},
+  {id:9303,cat:"Shopping",en:"Do you have another color?",th:"mee see uen mai",tone:""},
+  {id:9304,cat:"Shopping",en:"Where's the fitting room?",th:"hong lorng seua yoo tee nai",tone:""},
+  {id:9305,cat:"Shopping",en:"I'm just browsing",th:"khor doo gorn",tone:""},
+  {id:9306,cat:"Shopping",en:"Do you have a bag?",th:"mee thoong mai",tone:""},
+  {id:9307,cat:"Shopping",en:"Receipt, please",th:"khor bai-set noi",tone:""},
+  // Hotel
+  {id:9400,cat:"Hotel",en:"I have a reservation",th:"chan/phom jong hong wai laeo",tone:""},
+  {id:9401,cat:"Hotel",en:"Check-in / check-out",th:"check-in / check-out",tone:"Widely understood in English"},
+  {id:9402,cat:"Hotel",en:"What time is breakfast?",th:"aa-haan chao gee mong",tone:""},
+  {id:9403,cat:"Hotel",en:"Is there Wi-Fi?",th:"mee wai-fai mai",tone:""},
+  {id:9404,cat:"Hotel",en:"What's the Wi-Fi password?",th:"pass-word wai-fai a-rai",tone:""},
+  {id:9405,cat:"Hotel",en:"Can I get a late check-out?",th:"check-out saai dai mai",tone:""},
+  {id:9406,cat:"Hotel",en:"The air conditioning is broken",th:"ae sia",tone:""},
+  {id:9407,cat:"Hotel",en:"Could I get more towels?",th:"khor pha chet tua peum noi",tone:""},
+  {id:9408,cat:"Hotel",en:"Key card",th:"kart hong",tone:""},
+  // Health
+  {id:9500,cat:"Health",en:"Pharmacy",th:"raan khai yaa",tone:""},
+  {id:9501,cat:"Health",en:"I have a headache",th:"puat hua",tone:""},
+  {id:9502,cat:"Health",en:"I have a stomach ache",th:"puat thong",tone:""},
+  {id:9503,cat:"Health",en:"I have a fever",th:"pen khai",tone:""},
+  {id:9504,cat:"Health",en:"I need painkillers",th:"tong-gaan yaa gae puat",tone:""},
+  {id:9505,cat:"Health",en:"I have travel / motion sickness",th:"mao rot mao reua",tone:""},
+  {id:9506,cat:"Health",en:"Sunscreen",th:"khreem gan daet",tone:""},
+  {id:9507,cat:"Health",en:"Mosquito repellent",th:"yaa kan yung",tone:""},
+  {id:9508,cat:"Health",en:"I'm okay, thank you",th:"chan/phom mai pen rai khob khun",tone:""},
+  {id:9509,cat:"Health",en:"I have diarrhea",th:"tong-sia",tone:""},
+  {id:9510,cat:"Health",en:"I feel like vomiting",th:"ruu-seuk yaak aa-jian",tone:""},
+  {id:9511,cat:"Health",en:"I have a cough / cold",th:"pen wat / ai",tone:""},
+  {id:9512,cat:"Health",en:"Insect bite",th:"malaeng-gat",tone:""},
+  {id:9513,cat:"Health",en:"I got sunburned",th:"phiu mai daet",tone:""},
+  {id:9514,cat:"Health",en:"I'm dehydrated / need water",th:"khaat naam",tone:""},
+  {id:9515,cat:"Health",en:"I'm diabetic",th:"chan/phom pen bao-waan",tone:""},
+  {id:9516,cat:"Health",en:"I'm allergic to peanuts",th:"chan/phom phae thua",tone:""},
+  {id:9517,cat:"Health",en:"I'm allergic to seafood",th:"chan/phom phae aa-haan tha-lay",tone:""},
+  {id:9518,cat:"Health",en:"Do you have a prescription for this?",th:"tong mee bai sang yaa mai",tone:""},
+  // extra Greetings
+  {id:9600,cat:"Greetings",en:"Hi (casual)",th:"wat-soep",tone:"Very informal, among young people"},
+  {id:9601,cat:"Greetings",en:"I'm here on holiday",th:"chan/phom maa thiao",tone:""},
+  {id:9602,cat:"Greetings",en:"This is my first time in Thailand",th:"nee pen khrang raek tee maa muang thai",tone:""},
+  {id:9603,cat:"Greetings",en:"I love Thailand",th:"chan/phom rak prathet thai",tone:""},
+  {id:9604,cat:"Greetings",en:"What do you do (for work)?",th:"khun tham-ngaan a-rai",tone:""},
+  // extra Food & Ordering
+  {id:9620,cat:"Food & Ordering",en:"Tom yum soup",th:"tom-yam",tone:""},
+  {id:9621,cat:"Food & Ordering",en:"Mango sticky rice",th:"khao niaow ma-muang",tone:""},
+  {id:9622,cat:"Food & Ordering",en:"Satay skewers",th:"sa-tay",tone:""},
+  {id:9623,cat:"Food & Ordering",en:"Papaya salad",th:"som-tam",tone:""},
+  {id:9624,cat:"Food & Ordering",en:"Noodle soup",th:"kuay-tiao",tone:""},
+  {id:9625,cat:"Food & Ordering",en:"Grilled chicken",th:"gai yaang",tone:""},
+  {id:9626,cat:"Food & Ordering",en:"Spring rolls",th:"por-pia",tone:""},
+  {id:9627,cat:"Food & Ordering",en:"A fork and spoon, please",th:"khor sorm gab chorn noi",tone:""},
+  {id:9628,cat:"Food & Ordering",en:"Chopsticks",th:"ta-gieb",tone:""},
+  {id:9629,cat:"Food & Ordering",en:"A table for two",th:"toh sorm rap song khon",tone:""},
+  {id:9630,cat:"Food & Ordering",en:"I'm allergic to shellfish",th:"chan/phom phae hoi",tone:""},
+  {id:9631,cat:"Food & Ordering",en:"I'm allergic to nuts",th:"chan/phom phae thua",tone:""},
+  {id:9632,cat:"Food & Ordering",en:"No dairy",th:"mai sai nom",tone:""},
+  {id:9633,cat:"Food & Ordering",en:"Beer, please",th:"khor beer noi",tone:""},
+  {id:9634,cat:"Food & Ordering",en:"No alcohol for me",th:"chan/phom mai deum lao",tone:""},
+  {id:9635,cat:"Food & Ordering",en:"Fresh coconut",th:"ma-phrao sot",tone:""},
+  {id:9636,cat:"Food & Ordering",en:"Fruit shake",th:"nam pon phon-la-mai",tone:""},
+  {id:9637,cat:"Food & Ordering",en:"Can I see the bill breakdown?",th:"khor doo raai-la-iat bin dai mai",tone:""},
+  // extra Directions
+  {id:9650,cat:"Directions",en:"Map",th:"phaen-tee",tone:""},
+  {id:9651,cat:"Directions",en:"Over there",th:"tee-non",tone:""},
+  {id:9652,cat:"Directions",en:"Next to",th:"tit gap",tone:""},
+  {id:9653,cat:"Directions",en:"In front of / behind",th:"na / lang",tone:""},
+  {id:9654,cat:"Directions",en:"Upstairs / downstairs",th:"chan bon / chan lang",tone:""},
+  {id:9655,cat:"Directions",en:"Elevator",th:"lift",tone:""},
+  {id:9656,cat:"Directions",en:"Restroom / toilet",th:"hong-naam",tone:""},
+  {id:9657,cat:"Directions",en:"Is it open now?",th:"pert mai tawn nee",tone:""},
+  // extra Numbers
+  {id:9670,cat:"Numbers",en:"Hundred thousand",th:"saen",tone:""},
+  {id:9671,cat:"Numbers",en:"Million",th:"laan",tone:""},
+  {id:9672,cat:"Numbers",en:"Half",th:"kreung",tone:""},
+  {id:9673,cat:"Numbers",en:"A dozen",th:"nueng lo",tone:"Literally 'one dozen'"},
+  {id:9674,cat:"Numbers",en:"A few / several",th:"lai an",tone:""},
+  // extra Bargaining
+  {id:9690,cat:"Bargaining",en:"Wholesale price?",th:"raa-kaa song",tone:""},
+  {id:9691,cat:"Bargaining",en:"Buy two, get a discount?",th:"sue song lot dai mai",tone:""},
+  {id:9692,cat:"Bargaining",en:"Is that your best price?",th:"raa-kaa nee thuuk sut laeo reu",tone:""},
+  // extra Emergencies
+  {id:9710,cat:"Emergencies",en:"I've lost my passport",th:"pass-port chan/phom haai",tone:""},
+  {id:9711,cat:"Emergencies",en:"Car accident",th:"rot chon gan",tone:""},
+  {id:9712,cat:"Emergencies",en:"I'm having an allergic reaction",th:"chan/phom mee aa-gaan phae",tone:""},
+  {id:9713,cat:"Emergencies",en:"Snake bite",th:"nguu-gat",tone:""},
+  {id:9714,cat:"Emergencies",en:"Please help me find my hotel",th:"chuay haa rong-raem chan/phom noi",tone:""},
+  // extra Politeness
+  {id:9730,cat:"Politeness",en:"Excuse me (getting attention)",th:"khor thot na krap/ka",tone:""},
+  {id:9731,cat:"Politeness",en:"After you",th:"cheun khun gorn",tone:""},
+  {id:9732,cat:"Politeness",en:"My pleasure",th:"yin-dee",tone:""},
+  {id:9733,cat:"Politeness",en:"Take care",th:"rak-sa sukhaphaap duay",tone:""},
+  {id:9734,cat:"Politeness",en:"Safe travels",th:"deun-thaang plort-phai",tone:""},
+  {id:9735,cat:"Politeness",en:"I'm learning Thai",th:"chan/phom gam-lang rian pha-saa thai",tone:""},
+  {id:9736,cat:"Politeness",en:"How do you say ___ in Thai?",th:"___ pha-saa thai phuut wa a-rai",tone:""},
+  // extra Transport
+  {id:9750,cat:"Transport",en:"Traffic jam",th:"rot-tit",tone:""},
+  {id:9751,cat:"Transport",en:"One-way ticket",th:"tua tiao-diao",tone:""},
+  {id:9752,cat:"Transport",en:"Round-trip ticket",th:"tua pai-glap",tone:""},
+  {id:9753,cat:"Transport",en:"Platform / gate",th:"chaan-chalaa / pratuu",tone:""},
+  {id:9754,cat:"Transport",en:"Luggage",th:"gra-pao deun-thaang",tone:""},
+  {id:9755,cat:"Transport",en:"Rent a scooter",th:"chao motor-sai",tone:""},
+  {id:9756,cat:"Transport",en:"Helmet",th:"muak gan-nok",tone:""},
+  {id:9757,cat:"Transport",en:"Driver's license",th:"bai khap-khee",tone:""},
+  {id:9758,cat:"Transport",en:"Gas station",th:"pam-naam-man",tone:""},
+  {id:9759,cat:"Transport",en:"Parking",th:"tee-jort-rot",tone:""},
+  // Time & Days (new category)
+  {id:9800,cat:"Time & Days",en:"Today",th:"wan-nee",tone:""},
+  {id:9801,cat:"Time & Days",en:"Tomorrow",th:"phrung-nee",tone:""},
+  {id:9802,cat:"Time & Days",en:"Yesterday",th:"meua-wan",tone:""},
+  {id:9803,cat:"Time & Days",en:"Now",th:"tawn-nee",tone:""},
+  {id:9804,cat:"Time & Days",en:"Later",th:"tee-lang",tone:""},
+  {id:9805,cat:"Time & Days",en:"Morning / afternoon",th:"chao / bai",tone:""},
+  {id:9806,cat:"Time & Days",en:"Evening / night",th:"yen / kuun",tone:""},
+  {id:9807,cat:"Time & Days",en:"What time is it?",th:"gee-mong laeo",tone:""},
+  {id:9808,cat:"Time & Days",en:"What time do you open / close?",th:"pert / pit gee-mong",tone:""},
+  {id:9809,cat:"Time & Days",en:"How long does it take?",th:"chai way-la naan tao-rai",tone:""},
+  {id:9810,cat:"Time & Days",en:"Monday",th:"wan-jan",tone:""},
+  {id:9811,cat:"Time & Days",en:"Tuesday",th:"wan-ang-khaan",tone:""},
+  {id:9812,cat:"Time & Days",en:"Wednesday",th:"wan-phut",tone:""},
+  {id:9813,cat:"Time & Days",en:"Thursday",th:"wan-pha-rue-hat",tone:""},
+  {id:9814,cat:"Time & Days",en:"Friday",th:"wan-suk",tone:""},
+  {id:9815,cat:"Time & Days",en:"Saturday",th:"wan-sao",tone:""},
+  {id:9816,cat:"Time & Days",en:"Sunday",th:"wan-aa-thit",tone:""},
+  // Family & People (new category)
+  {id:9850,cat:"Family & People",en:"My wife / husband",th:"phan-ra-yaa chan / saa-mee chan",tone:""},
+  {id:9851,cat:"Family & People",en:"My boyfriend / girlfriend",th:"faen chan",tone:"Gender-neutral term"},
+  {id:9852,cat:"Family & People",en:"My friend",th:"peuan chan",tone:""},
+  {id:9853,cat:"Family & People",en:"My child / children",th:"luuk chan",tone:""},
+  {id:9854,cat:"Family & People",en:"My mother / father",th:"mae chan / phor chan",tone:""},
+  {id:9855,cat:"Family & People",en:"I'm single",th:"chan/phom pen sot",tone:""},
+  {id:9856,cat:"Family & People",en:"I'm married",th:"chan/phom taeng-ngan laeo",tone:""},
+  {id:9857,cat:"Family & People",en:"This is my family",th:"nee khreu khropkrua chan",tone:""},
+  {id:9858,cat:"Family & People",en:"You have a beautiful family",th:"khropkrua khun suay/lor maak",tone:""},
+  // Technology & Phone (new category)
+  {id:9880,cat:"Technology & Phone",en:"Phone charger",th:"sai-chaat",tone:""},
+  {id:9881,cat:"Technology & Phone",en:"Power outlet",th:"plug fai",tone:""},
+  {id:9882,cat:"Technology & Phone",en:"SIM card",th:"sim-kaat",tone:""},
+  {id:9883,cat:"Technology & Phone",en:"Internet / mobile data",th:"in-ter-net",tone:""},
+  {id:9884,cat:"Technology & Phone",en:"My battery is low",th:"baet chan/phom yer",tone:""},
+  {id:9885,cat:"Technology & Phone",en:"I lost my phone",th:"tho-ra-sap chan/phom haai",tone:""},
+  {id:9886,cat:"Technology & Phone",en:"Power bank",th:"power-bank",tone:""},
+  {id:9887,cat:"Technology & Phone",en:"Can you take our photo?",th:"chuay thaai ruup hai noi dai mai",tone:""},
+  {id:9888,cat:"Technology & Phone",en:"Photo together",th:"thaai ruup duay-gan",tone:""},
+  // Weather & Nature (new category)
+  {id:9900,cat:"Weather & Nature",en:"It's hot",th:"ron maak",tone:""},
+  {id:9901,cat:"Weather & Nature",en:"It's raining",th:"fon-tok",tone:""},
+  {id:9902,cat:"Weather & Nature",en:"It's sunny",th:"daet-ork",tone:""},
+  {id:9903,cat:"Weather & Nature",en:"It's humid",th:"op-aaw",tone:""},
+  {id:9904,cat:"Weather & Nature",en:"Rainy season",th:"na fon",tone:""},
+  {id:9905,cat:"Weather & Nature",en:"Beach / sea",th:"chai-haat / tha-lay",tone:""},
+  {id:9906,cat:"Weather & Nature",en:"Mountain / jungle",th:"phu-khao / pa",tone:""},
+  {id:9907,cat:"Weather & Nature",en:"Sunset / sunrise",th:"phra-aa-thit-tok / phra-aa-thit-kheun",tone:""},
+  // Conversation & Feelings (new category)
+  {id:9950,cat:"Conversation & Feelings",en:"I like it",th:"chan/phom chorp",tone:""},
+  {id:9951,cat:"Conversation & Feelings",en:"I don't like it",th:"chan/phom mai chorp",tone:""},
+  {id:9952,cat:"Conversation & Feelings",en:"I'm happy",th:"chan/phom dee-jai",tone:""},
+  {id:9953,cat:"Conversation & Feelings",en:"I'm tired",th:"chan/phom neuay",tone:""},
+  {id:9954,cat:"Conversation & Feelings",en:"I'm excited",th:"chan/phom tuen-ten",tone:""},
+  {id:9955,cat:"Conversation & Feelings",en:"This is beautiful",th:"suay maak",tone:""},
+  {id:9956,cat:"Conversation & Feelings",en:"Amazing!",th:"yort maak",tone:""},
+  {id:9957,cat:"Conversation & Feelings",en:"That's funny",th:"talok dee",tone:""},
+  {id:9958,cat:"Conversation & Feelings",en:"I agree",th:"hen duay",tone:""},
+  {id:9959,cat:"Conversation & Feelings",en:"Maybe",th:"aat-ja",tone:""},
+  {id:9960,cat:"Conversation & Feelings",en:"Of course",th:"nae-norn",tone:""},
+  {id:9961,cat:"Conversation & Feelings",en:"Let's go",th:"pai gan tho",tone:""},
+  {id:9962,cat:"Conversation & Feelings",en:"Wait a moment",th:"ror sak-khruu",tone:""},
+  {id:9963,cat:"Conversation & Feelings",en:"I'm ready",th:"chan/phom phrom laeo",tone:""},
+
+  // ===== Extra useful phrases =====
+  // More Greetings & Social
+  {id:10001,cat:"Greetings",en:"Have a nice day",th:"kho hai mee wan dee",tone:""},
+  {id:10002,cat:"Greetings",en:"See you tomorrow",th:"jer gan phrung-nee",tone:""},
+  {id:10003,cat:"Greetings",en:"Welcome back",th:"yin-dee ton-rap glap maa",tone:""},
+  {id:10004,cat:"Greetings",en:"How was your day?",th:"wan-nee pen yang-ngai",tone:""},
+  {id:10005,cat:"Greetings",en:"I missed you",th:"khit theung",tone:""},
+
+  // More Food
+  {id:10020,cat:"Food & Ordering",en:"Massaman curry",th:"gaeng matsaman",tone:""},
+  {id:10021,cat:"Food & Ordering",en:"Red curry",th:"gaeng daeng",tone:""},
+  {id:10022,cat:"Food & Ordering",en:"Thai iced tea",th:"cha yen",tone:""},
+  {id:10023,cat:"Food & Ordering",en:"Coconut water",th:"nam ma-phrao",tone:""},
+  {id:10024,cat:"Food & Ordering",en:"Grilled fish",th:"plaa yaang",tone:""},
+  {id:10025,cat:"Food & Ordering",en:"Seafood",th:"aa-haan tha-lay",tone:""},
+  {id:10026,cat:"Food & Ordering",en:"Is this fresh?",th:"sot mai",tone:""},
+  {id:10027,cat:"Food & Ordering",en:"Less oil / less salt",th:"noi man / noi gleua",tone:""},
+  {id:10028,cat:"Food & Ordering",en:"Can I have a spoon?",th:"khor chorn noi",tone:""},
+  {id:10029,cat:"Food & Ordering",en:"This is too spicy for me",th:"phet pai sam-rap chan/phom",tone:""},
+  {id:10030,cat:"Food & Ordering",en:"What do you recommend?",th:"khun nae-nam a-rai",tone:""},
+  {id:10031,cat:"Food & Ordering",en:"Local specialty / signature dish",th:"aa-haan chao-ban / aa-haan dee",tone:""},
+  {id:10032,cat:"Food & Ordering",en:"I'm vegetarian (no fish sauce)",th:"mangsawirat mai sai nam-plaa",tone:"Important — many Thai dishes use fish sauce"},
+  {id:10033,cat:"Food & Ordering",en:"No MSG",th:"mai sai phong-chuu-rot",tone:""},
+
+  // More Directions & Places
+  {id:10040,cat:"Directions",en:"Temple / Wat",th:"wat",tone:""},
+  {id:10041,cat:"Directions",en:"Market",th:"talaad",tone:""},
+  {id:10042,cat:"Directions",en:"Night market",th:"talaad-to-rueng",tone:""},
+  {id:10043,cat:"Directions",en:"Convenience store (7-Eleven)",th:"set-wen",tone:""},
+  {id:10044,cat:"Directions",en:"ATM / Bank",th:"ATM / tha-naa-khaan",tone:""},
+  {id:10045,cat:"Directions",en:"Police station",th:"sa-thaa-nee dtam-ruat",tone:""},
+  {id:10046,cat:"Directions",en:"How do I get to…?",th:"pai… yang-ngai",tone:""},
+  {id:10047,cat:"Directions",en:"Is it far from here?",th:"glai jaak nee mai",tone:""},
+  {id:10048,cat:"Directions",en:"Can you show me on the map?",th:"chuay bork nai phaen-tee noi",tone:""},
+  {id:10049,cat:"Directions",en:"I'm looking for…",th:"chan/phom gam-lang haa…",tone:""},
+
+  // More Bargaining & Money
+  {id:10060,cat:"Bargaining",en:"What's your best price?",th:"raa-kaa dee sut tao-rai",tone:""},
+  {id:10061,cat:"Bargaining",en:"If I buy more, cheaper?",th:"sue maak lot dai mai",tone:""},
+  {id:10062,cat:"Bargaining",en:"Cash only?",th:"rap tae ngern sot reu",tone:""},
+  {id:10063,cat:"Bargaining",en:"Can you wrap it as a gift?",th:"hok hai pen khong-khwan dai mai",tone:""},
+  {id:10064,cat:"Bargaining",en:"I don't have enough money",th:"ngern mai phor",tone:""},
+
+  // More Transport
+  {id:10070,cat:"Transport",en:"Grab / taxi app",th:"Grab",tone:"Widely used"},
+  {id:10071,cat:"Transport",en:"BTS / Skytrain",th:"BTS / rot-fai-faa",tone:""},
+  {id:10072,cat:"Transport",en:"MRT / subway",th:"MRT / rot-fai-tai-din",tone:""},
+  {id:10073,cat:"Transport",en:"How much for a tuk-tuk to…?",th:"took-took pai… tao-rai",tone:""},
+  {id:10074,cat:"Transport",en:"Please drive carefully",th:"khap reu-ang-raao noi",tone:""},
+  {id:10075,cat:"Transport",en:"I need a receipt for the taxi",th:"khor bai-set taxi noi",tone:""},
+  {id:10076,cat:"Transport",en:"Where can I rent a bike?",th:"chao jak-ga-yaan yoo tee nai",tone:""},
+
+  // More Hotel
+  {id:10080,cat:"Hotel",en:"Do you have a room available?",th:"mee hong wang mai",tone:""},
+  {id:10081,cat:"Hotel",en:"Single / double room",th:"hong diao / hong kuu",tone:""},
+  {id:10082,cat:"Hotel",en:"With breakfast included?",th:"ruam aa-haan chao mai",tone:""},
+  {id:10083,cat:"Hotel",en:"Can I leave my luggage?",th:"fang gra-pao wai dai mai",tone:""},
+  {id:10084,cat:"Hotel",en:"The room is too noisy",th:"hong siang dang",tone:""},
+  {id:10085,cat:"Hotel",en:"Can I change rooms?",th:"plian hong dai mai",tone:""},
+  {id:10086,cat:"Hotel",en:"Is there a swimming pool?",th:"mee sa-wim-ming pool mai",tone:""},
+  {id:10087,cat:"Hotel",en:"Laundry service",th:"bor-ri-gaan sak pha",tone:""},
+
+  // More Health & Safety
+  {id:10090,cat:"Health",en:"I have a sore throat",th:"puat khor",tone:""},
+  {id:10091,cat:"Health",en:"I have a toothache",th:"puat fan",tone:""},
+  {id:10092,cat:"Health",en:"I need antihistamine",th:"tong-gaan yaa gae pae",tone:""},
+  {id:10093,cat:"Health",en:"Band-aid / plaster",th:"plaas-ter",tone:""},
+  {id:10094,cat:"Health",en:"I got a cut / wound",th:"baat-jeb",tone:""},
+  {id:10095,cat:"Health",en:"Where is the nearest clinic?",th:"klinik glai tee sut yoo tee nai",tone:""},
+  {id:10096,cat:"Health",en:"I need to rest",th:"tong-gaan phak",tone:""},
+
+  // More Conversation
+  {id:10100,cat:"Conversation & Feelings",en:"That's interesting",th:"naa-son-jai",tone:""},
+  {id:10101,cat:"Conversation & Feelings",en:"I understand",th:"khao jai",tone:""},
+  {id:10102,cat:"Conversation & Feelings",en:"Really? / Is that so?",th:"jing reu",tone:""},
+  {id:10103,cat:"Conversation & Feelings",en:"No way! / Impossible",th:"mai dai!",tone:""},
+  {id:10104,cat:"Conversation & Feelings",en:"I'm a bit shy",th:"chan/phom aai nit-noi",tone:""},
+  {id:10105,cat:"Conversation & Feelings",en:"Can we take a photo together?",th:"thaai ruup duay-gan dai mai",tone:""},
+  {id:10106,cat:"Conversation & Feelings",en:"What's your favourite food?",th:"aa-haan thee chorp a-rai",tone:""},
+  {id:10107,cat:"Conversation & Feelings",en:"I want to learn more Thai",th:"yaak rian pha-saa thai eek",tone:""},
+  {id:10108,cat:"Conversation & Feelings",en:"You speak English well",th:"khun phuut ang-grit keng",tone:""},
+  {id:10109,cat:"Conversation & Feelings",en:"It's okay, don't worry",th:"mai pen rai, mai tong kang-won",tone:""},
+  {id:10110,cat:"Conversation & Feelings",en:"I had a great time",th:"sanuk maak",tone:""},
+  {id:10111,cat:"Conversation & Feelings",en:"Thank you for everything",th:"khop khun sam-rap thuk-sing",tone:""},
+
+  // Weather extras
+  {id:10120,cat:"Weather & Nature",en:"It's very humid today",th:"wan-nee op-aaw maak",tone:""},
+  {id:10121,cat:"Weather & Nature",en:"Will it rain later?",th:"ja fon-tok mai",tone:""},
+  {id:10122,cat:"Weather & Nature",en:"The weather is nice",th:"aa-gaat dee",tone:""},
+  {id:10123,cat:"Weather & Nature",en:"It's too hot to walk",th:"ron maak deun mai dai",tone:""},
+
+  // Technology extras
+  {id:10130,cat:"Technology & Phone",en:"Do you have free Wi-Fi?",th:"mee wai-fai free mai",tone:""},
+  {id:10131,cat:"Technology & Phone",en:"The signal is weak",th:"sanyan orn",tone:""},
+  {id:10132,cat:"Technology & Phone",en:"Can I charge my phone here?",th:"chaat tho-ra-sap tee nee dai mai",tone:""},
+  {id:10133,cat:"Technology & Phone",en:"I need a local SIM",th:"tong-gaan sim thai",tone:""},
+
+  // Time extras
+  {id:10140,cat:"Time & Days",en:"In the morning",th:"dtorn chao",tone:""},
+  {id:10141,cat:"Time & Days",en:"In the evening",th:"dtorn yen",tone:""},
+  {id:10142,cat:"Time & Days",en:"Next week",th:"aap-daa naa",tone:""},
+  {id:10143,cat:"Time & Days",en:"Last week",th:"aap-daa tee laeo",tone:""},
+  {id:10144,cat:"Time & Days",en:"This weekend",th:"suth-sap-daa nee",tone:""},
+  {id:10145,cat:"Time & Days",en:"As soon as possible",th:"reo thee sut",tone:""},
+];
+const PHRASE_CATS = ["All","Greetings","Food & Ordering","Directions","Numbers","Bargaining","Emergencies","Politeness","Transport","Shopping","Hotel","Health","Time & Days","Family & People","Technology & Phone","Weather & Nature","Conversation & Feelings"];
+let activePhraseCat = "All";
+let phraseSearchTerm = "";
+
+function renderPhraseCats(){
+  const el = document.getElementById("phrase-cats");
+  el.innerHTML = PHRASE_CATS.map(c=>`<button class="pill ${c===activePhraseCat?'on':''}" data-cat="${c}">${c}</button>`).join("");
+  el.querySelectorAll(".pill").forEach(b=>b.addEventListener("click", ()=>{
+    activePhraseCat = b.dataset.cat;
+    renderPhraseCats();
+    renderPhraseList();
+  }));
+}
+function heartSvg(filled){
+  return filled
+    ? `<svg viewBox="0 0 24 24" fill="#E3B24C" stroke="#E3B24C" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9C.8 8.4 2.4 5 6 5c2 0 3.4 1.1 4 2.2C10.6 6.1 12 5 14 5c3.6 0 5.2 3.4 3.5 7-2.5 4.5-9.5 9-9.5 9z"/></svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9C.8 8.4 2.4 5 6 5c2 0 3.4 1.1 4 2.2C10.6 6.1 12 5 14 5c3.6 0 5.2 3.4 3.5 7-2.5 4.5-9.5 9-9.5 9z"/></svg>`;
+}
+function renderPhraseList(){
+  const term = phraseSearchTerm.toLowerCase();
+  let list = PHRASES.filter(p=>{
+    const matchCat = activePhraseCat==="All" || p.cat===activePhraseCat;
+    const matchSearch = !term || p.en.toLowerCase().includes(term) || p.th.toLowerCase().includes(term);
+    return matchCat && matchSearch;
+  });
+  const el = document.getElementById("phrase-list");
+  if(!list.length){
+    el.innerHTML = `<div class="empty"><div class="ic">${ICONS.search}</div><div class="t">No phrases found</div><div class="s">Try a different search or category</div></div>`;
+    return;
+  }
+  el.innerHTML = list.map(p=>{
+    const fav = DATA.phrasebookFavorites.includes(p.id);
+    return `<div class="phrase-item">
+      <div>
+        <div class="eng">${p.en}</div>
+        <div class="thai">${p.th}</div>
+        ${p.tone ? `<div class="tone">${p.tone}</div>` : ""}
+      </div>
+      <button class="fav-btn ${fav?'active':''}" data-id="${p.id}">${heartSvg(fav)}</button>
+    </div>`;
+  }).join("");
+  el.querySelectorAll(".fav-btn").forEach(b=>b.addEventListener("click", ()=>{
+    const id = parseInt(b.dataset.id);
+    const idx = DATA.phrasebookFavorites.indexOf(id);
+    if(idx>-1) DATA.phrasebookFavorites.splice(idx,1);
+    else DATA.phrasebookFavorites.push(id);
+    saveData();
+    renderPhraseList();
+  }));
+}
+document.getElementById("phrase-search").addEventListener("input", (e)=>{
+  phraseSearchTerm = e.target.value;
+  renderPhraseList();
+});
+renderPhraseCats();
+
+/* =========================================================
+   EXPENSES
+   ========================================================= */
+const EXP_CATS = [
+  {k:"Food", ic:"🍜"}, {k:"Transport", ic:"🛺"}, {k:"Accommodation", ic:"🏨"},
+  {k:"SIM/eSIM", ic:"📶"}, {k:"Shopping", ic:"🛍️"}, {k:"Activities", ic:"🎟️"}, {k:"Other", ic:"✦"}
+];
+function catIcon(k){ const c = EXP_CATS.find(c=>c.k===k); return c ? c.ic : "✦"; }
+
+function openExpenseModal(existing){
+  const isEdit = !!existing;
+  const e = existing || {amount:"", currency:"THB", category:"Food", paymentMethod:"Cash", note:"", status:"paid", date:todayStr(), dueDate:""};
+  openModal(`
+    <div class="modal-title">${isEdit?"Edit expense":"Add expense"}</div>
+    <div class="field">
+      <label class="field-label">Amount</label>
+      <div style="display:flex; gap:8px;">
+        <input class="input" id="m-amount" inputmode="decimal" value="${e.amount}" placeholder="0" style="flex:1;">
+        <select class="input" id="m-currency" style="flex:0 0 90px;">
+          <option value="THB" ${e.currency==="THB"?"selected":""}>THB</option>
+          <option value="EUR" ${e.currency==="EUR"?"selected":""}>EUR</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Category</label>
+      <select class="input" id="m-category">
+        ${EXP_CATS.map(c=>`<option value="${c.k}" ${e.category===c.k?"selected":""}>${c.ic} ${c.k}</option>`).join("")}
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label">Date</label>
+      <input class="input" id="m-date" type="date" value="${e.date}">
+    </div>
+    <div class="field">
+      <label class="field-label">Payment method</label>
+      <input class="input" id="m-method" value="${e.paymentMethod}" placeholder="Cash, card, PromptPay…">
+    </div>
+    <div class="field">
+      <label class="field-label">Note</label>
+      <input class="input" id="m-note" value="${e.note}" placeholder="Optional note">
+    </div>
+    <div class="field">
+      <label class="field-label">Status</label>
+      <div class="row" style="gap:8px;">
+        <button class="pill ${e.status==='paid'?'on':''}" id="m-status-paid" style="flex:1;">Paid</button>
+        <button class="pill ${e.status==='upcoming'?'on':''}" id="m-status-upcoming" style="flex:1;">Upcoming / owed</button>
+      </div>
+    </div>
+    <div class="field" id="m-due-wrap" style="display:${e.status==='upcoming'?'block':'none'};">
+      <label class="field-label">Due date</label>
+      <input class="input" id="m-due" type="date" value="${e.dueDate||''}">
+    </div>
+    <div class="row" style="gap:8px; margin-top:6px;">
+      ${isEdit ? `<button class="btn danger" id="m-delete">Delete</button>` : ""}
+      <button class="btn" style="flex:1;" id="m-save">Save expense</button>
+    </div>
+  `);
+  let status = e.status;
+  document.getElementById("m-status-paid").addEventListener("click", ()=>{
+    status="paid";
+    document.getElementById("m-status-paid").classList.add("on");
+    document.getElementById("m-status-upcoming").classList.remove("on");
+    document.getElementById("m-due-wrap").style.display="none";
+  });
+  document.getElementById("m-status-upcoming").addEventListener("click", ()=>{
+    status="upcoming";
+    document.getElementById("m-status-upcoming").classList.add("on");
+    document.getElementById("m-status-paid").classList.remove("on");
+    document.getElementById("m-due-wrap").style.display="block";
+  });
+  if(isEdit){
+    document.getElementById("m-delete").addEventListener("click", ()=>{
+      DATA.expenses = DATA.expenses.filter(x=>x.id!==existing.id);
+      saveData(); closeModal(); renderExpenses(); toast("Expense deleted");
+    });
+  }
+  document.getElementById("m-save").addEventListener("click", ()=>{
+    const amount = parseFloat(document.getElementById("m-amount").value);
+    if(isNaN(amount) || amount<=0){ toast("Enter a valid amount"); return; }
+    const currency = document.getElementById("m-currency").value;
+    const amountThb = currency==="THB" ? amount : eurToThb(amount);
+    const amountEur = currency==="EUR" ? amount : thbToEur(amount);
+    const record = {
+      id: isEdit ? existing.id : uid(),
+      date: document.getElementById("m-date").value || todayStr(),
+      amount, currency, amountThb, amountEur,
+      category: document.getElementById("m-category").value,
+      paymentMethod: document.getElementById("m-method").value || "Cash",
+      note: document.getElementById("m-note").value,
+      status,
+      dueDate: status==="upcoming" ? (document.getElementById("m-due").value||null) : null,
+      createdAt: isEdit ? existing.createdAt : Date.now()
+    };
+    if(isEdit){
+      const i = DATA.expenses.findIndex(x=>x.id===existing.id);
+      DATA.expenses[i] = record;
+    } else {
+      DATA.expenses.push(record);
+    }
+    saveData(); closeModal(); renderExpenses(); renderHome();
+    toast(isEdit ? "Expense updated" : "Expense added");
+  });
+}
+
+function renderExpenses(){
+  const totalThb = DATA.expenses.filter(e=>e.status==="paid").reduce((s,e)=>s+e.amountThb,0);
+  const totalEur = DATA.expenses.filter(e=>e.status==="paid").reduce((s,e)=>s+e.amountEur,0);
+  const upcomingThb = DATA.expenses.filter(e=>e.status==="upcoming").reduce((s,e)=>s+e.amountThb,0);
+  document.getElementById("exp-total-thb").textContent = fmtThb(totalThb);
+  document.getElementById("exp-total-eur").textContent = fmtEur(totalEur);
+  document.getElementById("exp-paid-count").textContent = DATA.expenses.filter(e=>e.status==="paid").length;
+  document.getElementById("exp-upcoming-amt").textContent = fmtThb(upcomingThb);
+
+  const byCat = {};
+  EXP_CATS.forEach(c=>byCat[c.k]=0);
+  DATA.expenses.filter(e=>e.status==="paid").forEach(e=>{ byCat[e.category] = (byCat[e.category]||0) + e.amountThb; });
+  const catBox = document.getElementById("exp-cat-breakdown");
+  const maxCat = Math.max(1, ...Object.values(byCat));
+  catBox.innerHTML = EXP_CATS.map(c=>{
+    const v = byCat[c.k]||0;
+    const pct = Math.round((v/maxCat)*100);
+    return `<div style="margin-bottom:10px;">
+      <div class="row" style="font-size:12.5px; margin-bottom:4px;">
+        <span>${c.ic} ${c.k}</span><span style="color:var(--text-dim);">${fmtThb(v)}</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%; background:var(--gold);"></div></div>
+    </div>`;
+  }).join("");
+
+  const list = document.getElementById("exp-list");
+  const sorted = [...DATA.expenses].sort((a,b)=> b.date.localeCompare(a.date) || b.createdAt-a.createdAt);
+  if(!sorted.length){
+    list.innerHTML = `<div class="empty"><div class="ic">${ICONS.receipt}</div><div class="t">No expenses yet</div><div class="s">Tap the + button to log your first one</div></div>`;
+    return;
+  }
+  list.innerHTML = `<div class="stagger">` + sorted.map(e=>`
+    <div class="exp-item" data-id="${e.id}">
+      <div class="exp-icon">${catIcon(e.category)}</div>
+      <div class="exp-mid">
+        <div class="t1"><span class="dot ${e.status}"></span> ${e.category}${e.note?" · "+escapeHtml(e.note):""}</div>
+        <div class="t2">${e.date} · ${escapeHtml(e.paymentMethod)}${e.status==='upcoming'&&e.dueDate?" · due "+e.dueDate:""}</div>
+      </div>
+      <div class="exp-amt">
+        <div class="a1">${fmtThb(e.amountThb)}</div>
+        <div class="a2">${fmtEur(e.amountEur)}</div>
+      </div>
+    </div>
+  `).join("") + `</div>`;
+  list.querySelectorAll(".exp-item").forEach(item=>{
+    item.addEventListener("click", ()=>{
+      const rec = DATA.expenses.find(e=>e.id===item.dataset.id);
+      openExpenseModal(rec);
+    });
+  });
+}
+function escapeHtml(s){ const d=document.createElement("div"); d.textContent=s||""; return d.innerHTML; }
+
+/* =========================================================
+   CALENDAR
+   ========================================================= */
+let currentCalYear = new Date().getFullYear();
+let currentCalMonth = new Date().getMonth(); // 0-indexed
+
+function openEventModal(year, month, existing){
+  const isEdit = !!existing;
+  const e = existing || {title:"", note:"", type:"reminder", date: `${year}-${pad(month+1)}-${pad(1)}`};
+  openModal(`
+    <div class="modal-title">${isEdit?"Edit event":"Add event"}</div>
+    <div class="field">
+      <label class="field-label">Title</label>
+      <input class="input" id="ev-title" value="${escapeHtml(e.title)}" placeholder="Flight to Phuket, hotel check-in…">
+    </div>
+    <div class="field">
+      <label class="field-label">Date</label>
+      <input class="input" id="ev-date" type="date" value="${e.date}">
+    </div>
+    <div class="field">
+      <label class="field-label">Type</label>
+      <select class="input" id="ev-type">
+        <option value="flight" ${e.type==="flight"?"selected":""}>✈️ Flight</option>
+        <option value="booking" ${e.type==="booking"?"selected":""}>🏨 Booking</option>
+        <option value="reminder" ${e.type==="reminder"?"selected":""}>⏰ Reminder</option>
+        <option value="activity" ${e.type==="activity"?"selected":""}>🎟️ Activity</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label">Note</label>
+      <input class="input" id="ev-note" value="${escapeHtml(e.note)}" placeholder="Optional details">
+    </div>
+    <div class="row" style="gap:8px; margin-top:6px;">
+      ${isEdit ? `<button class="btn danger" id="ev-delete">Delete</button>` : ""}
+      <button class="btn" style="flex:1;" id="ev-save">Save event</button>
+    </div>
+  `);
+  if(isEdit){
+    document.getElementById("ev-delete").addEventListener("click", ()=>{
+      DATA.calendarEvents = DATA.calendarEvents.filter(x=>x.id!==existing.id);
+      saveData(); closeModal(); renderCalendar(); toast("Event deleted");
+    });
+  }
+  document.getElementById("ev-save").addEventListener("click", ()=>{
+    const title = document.getElementById("ev-title").value.trim();
+    if(!title){ toast("Give the event a title"); return; }
+    const record = {
+      id: isEdit ? existing.id : uid(),
+      date: document.getElementById("ev-date").value,
+      title,
+      type: document.getElementById("ev-type").value,
+      note: document.getElementById("ev-note").value
+    };
+    if(isEdit){
+      const i = DATA.calendarEvents.findIndex(x=>x.id===existing.id);
+      DATA.calendarEvents[i] = record;
+    } else {
+      DATA.calendarEvents.push(record);
+    }
+    saveData(); closeModal(); renderCalendar();
+    toast(isEdit ? "Event updated" : "Event added");
+  });
+}
+
+const EVENT_ICON = {flight:"✈️", booking:"🏨", reminder:"⏰", activity:"🎟️"};
+
+function renderCalendar(){
+  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  document.getElementById("cal-month-label").textContent = `${monthNames[currentCalMonth]} ${currentCalYear}`;
+  const grid = document.getElementById("cal-grid");
+  const dows = ["S","M","T","W","T","F","S"];
+  let html = dows.map(d=>`<div class="cal-dow">${d}</div>`).join("");
+
+  const firstDay = new Date(currentCalYear, currentCalMonth, 1).getDay();
+  const daysInMonth = new Date(currentCalYear, currentCalMonth+1, 0).getDate();
+  const today = todayStr();
+
+  for(let i=0;i<firstDay;i++) html += `<div class="cal-day empty"></div>`;
+  for(let d=1; d<=daysInMonth; d++){
+    const dateStr = `${currentCalYear}-${pad(currentCalMonth+1)}-${pad(d)}`;
+    const hasEvent = DATA.calendarEvents.some(e=>e.date===dateStr);
+    const hasExpense = DATA.expenses.some(e=>e.date===dateStr);
+    const hasPhoto = DATA.photos.some(p=>p.date===dateStr);
+    const isToday = dateStr===today;
+    let dots = "";
+    if(hasEvent) dots += `<span style="background:var(--orchid);"></span>`;
+    if(hasExpense) dots += `<span style="background:var(--gold);"></span>`;
+    if(hasPhoto) dots += `<span style="background:var(--jade);"></span>`;
+    html += `<div class="cal-day ${hasEvent?'has-event':''} ${isToday?'today':''}" data-date="${dateStr}">
+      ${d}<div class="dots">${dots}</div>
+    </div>`;
+  }
+  grid.innerHTML = html;
+  grid.querySelectorAll(".cal-day:not(.empty)").forEach(cell=>{
+    cell.addEventListener("click", ()=>{
+      const date = cell.dataset.date;
+      const evs = DATA.calendarEvents.filter(e=>e.date===date);
+      if(evs.length===1) openEventModal(currentCalYear, currentCalMonth, evs[0]);
+      else if(evs.length>1) showDayEventsModal(date, evs);
+      else openEventModal(currentCalYear, currentCalMonth, {date, title:"", note:"", type:"reminder"});
+    });
+  });
+
+  const list = document.getElementById("cal-event-list");
+  const upcoming = [...DATA.calendarEvents].sort((a,b)=>a.date.localeCompare(b.date));
+  if(!upcoming.length){
+    list.innerHTML = `<div class="empty"><div class="ic">${ICONS.calendar}</div><div class="t">No events yet</div><div class="s">Tap a day or the + button to add one</div></div>`;
+  } else {
+    list.innerHTML = `<div class="stagger">` + upcoming.map(e=>`
+      <div class="event-item" data-id="${e.id}">
+        <div class="exp-icon">${EVENT_ICON[e.type]||"📌"}</div>
+        <div class="exp-mid">
+          <div class="t1">${escapeHtml(e.title)}</div>
+          <div class="t2">${e.date}${e.note?" · "+escapeHtml(e.note):""}</div>
+        </div>
+      </div>`).join("") + `</div>`;
+    list.querySelectorAll(".event-item").forEach(item=>{
+      item.addEventListener("click", ()=>{
+        const ev = DATA.calendarEvents.find(x=>x.id===item.dataset.id);
+        openEventModal(currentCalYear, currentCalMonth, ev);
+      });
+    });
+  }
+}
+function showDayEventsModal(date, evs){
+  openModal(`
+    <div class="modal-title">${date}</div>
+    <div>${evs.map(e=>`<div class="event-item" data-id="${e.id}">
+      <div class="exp-icon">${EVENT_ICON[e.type]||"📌"}</div>
+      <div class="exp-mid"><div class="t1">${escapeHtml(e.title)}</div><div class="t2">${escapeHtml(e.note||"")}</div></div>
+    </div>`).join("")}</div>
+    <button class="btn secondary" style="width:100%; margin-top:10px;" id="add-another">+ Add another event this day</button>
+  `);
+  modalSheet.querySelectorAll(".event-item").forEach(item=>{
+    item.addEventListener("click", ()=>{
+      const ev = evs.find(x=>x.id===item.dataset.id);
+      openEventModal(currentCalYear, currentCalMonth, ev);
+    });
+  });
+  document.getElementById("add-another").addEventListener("click", ()=>{
+    openEventModal(currentCalYear, currentCalMonth, {date, title:"", note:"", type:"reminder"});
+  });
+}
+document.getElementById("cal-prev").addEventListener("click", ()=>{
+  currentCalMonth--; if(currentCalMonth<0){currentCalMonth=11; currentCalYear--;}
+  renderCalendar();
+});
+document.getElementById("cal-next").addEventListener("click", ()=>{
+  currentCalMonth++; if(currentCalMonth>11){currentCalMonth=0; currentCalYear++;}
+  renderCalendar();
+});
+
+/* =========================================================
+   PHOTOS
+   ========================================================= */
+document.getElementById("photo-input").addEventListener("change", (e)=>{
+  const files = Array.from(e.target.files||[]);
+  if(!files.length) return;
+  let remaining = files.length;
+  files.forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      DATA.photos.push({
+        id: uid(), date: todayStr(), dataUrl: reader.result, caption: "", createdAt: Date.now()
+      });
+      remaining--;
+      if(remaining===0){
+        saveData(); renderPhotos(); renderHome();
+        toast(files.length>1 ? files.length+" photos added" : "Photo added");
+      }
+    };
+    reader.onerror = ()=>{ toast("Couldn't read that photo"); remaining--; };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = "";
+});
+function renderPhotos(){
+  const el = document.getElementById("photo-timeline");
+  const byDate = {};
+  DATA.photos.forEach(p=>{ (byDate[p.date] = byDate[p.date]||[]).push(p); });
+  const dates = Object.keys(byDate).sort().reverse();
+
+  const ctaHtml = `<button class="add-photo-cta" id="top-add-photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+      Add a photo
+    </button>`;
+
+  if(!dates.length){
+    el.innerHTML = ctaHtml + `
+      <div class="empty"><div class="ic">${ICONS.camera}</div><div class="t">No photos yet</div><div class="s">Add today's photos to start the log</div></div>`;
+    document.getElementById("top-add-photo").addEventListener("click", ()=>document.getElementById("photo-input").click());
+    return;
+  }
+  el.innerHTML = ctaHtml + dates.map(date=>`
+    <div class="photo-day">
+      <div class="pd-label">${date}${date===todayStr()?" · Today":""}</div>
+      <div class="photo-grid">
+        ${byDate[date].map(p=>`
+          <div class="photo-thumb" data-id="${p.id}">
+            <img src="${p.dataUrl}" loading="lazy">
+            <div class="rm" data-rm="${p.id}">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </div>
+          </div>`).join("")}
+        <div class="add-photo-tile" data-add-date="${date}">+</div>
+      </div>
+    </div>
+  `).join("");
+  document.getElementById("top-add-photo").addEventListener("click", ()=>document.getElementById("photo-input").click());
+  el.querySelectorAll("[data-rm]").forEach(b=>b.addEventListener("click",(ev)=>{
+    ev.stopPropagation();
+    DATA.photos = DATA.photos.filter(p=>p.id!==b.dataset.rm);
+    saveData(); renderPhotos(); renderHome();
+  }));
+  el.querySelectorAll("[data-add-date]").forEach(b=>b.addEventListener("click", ()=>{
+    document.getElementById("photo-input").click();
+  }));
+}
+
+/* =========================================================
+   HOME SCREEN AGGREGATES
+   ========================================================= */
+function renderHome(){
+  updateClocks();
+  renderQuote();
+  const totalThb = DATA.expenses.filter(e=>e.status==="paid").reduce((s,e)=>s+e.amountThb,0);
+  document.getElementById("home-spend-thb").textContent = fmtThb(totalThb);
+  document.getElementById("home-upcoming").textContent = DATA.expenses.filter(e=>e.status==="upcoming").length;
+  document.getElementById("home-photos").textContent = DATA.photos.length;
+
+  let daysIn = "—";
+  const tripDates = [...DATA.expenses.map(e=>e.date), ...DATA.photos.map(p=>p.date)].sort();
+  if(tripDates.length){
+    const start = new Date(tripDates[0]);
+    const now = new Date(todayStr());
+    daysIn = Math.max(1, Math.round((now-start)/86400000)+1);
+  }
+  document.getElementById("home-days").textContent = daysIn;
+
+  const v = parseFloat(document.getElementById("home-thb").value);
+  document.getElementById("home-eur").value = isNaN(v) ? "" : thbToEur(v).toFixed(2);
+}
+
+/* =========================================================
+   END-OF-TRIP SUMMARY
+   ========================================================= */
+let slideIndex = 0, slideTimer = null;
+
+function renderSummary(){
+  const paid = DATA.expenses.filter(e=>e.status==="paid");
+  const totalThb = paid.reduce((s,e)=>s+e.amountThb,0);
+  document.getElementById("sum-total").textContent = fmtThb(totalThb);
+
+  // by category
+  const byCat = {};
+  EXP_CATS.forEach(c=>byCat[c.k]=0);
+  paid.forEach(e=>{ byCat[e.category] = (byCat[e.category]||0)+e.amountThb; });
+  const maxCat = Math.max(1, ...Object.values(byCat));
+  const chart = document.getElementById("sum-bar-chart");
+  const colors = ["#E3B24C","#B487F5","#4FBF8B","#E36B5C","#6FA8DC","#E3B24C","#B487F5"];
+  chart.innerHTML = EXP_CATS.map((c,i)=>{
+    const v = byCat[c.k]||0;
+    const pct = Math.round((v/maxCat)*100);
+    return `<div class="bar-row">
+      <div class="lbl-row"><span>${c.ic} ${c.k}</span><span style="color:var(--text-dim);">${fmtThb(v)}</span></div>
+      <div class="bar-track"><div class="bar-fill" id="bar-${i}" style="background:${colors[i]}"></div></div>
+    </div>`;
+  }).join("");
+  requestAnimationFrame(()=>{
+    setTimeout(()=>{
+      EXP_CATS.forEach((c,i)=>{
+        const v = byCat[c.k]||0;
+        const pct = Math.round((v/maxCat)*100);
+        const bar = document.getElementById("bar-"+i);
+        if(bar) bar.style.width = pct+"%";
+      });
+    }, 60);
+  });
+
+  // highest/lowest category
+  const catEntries = EXP_CATS.map(c=>[c.k, byCat[c.k]||0]).filter(([,v])=>v>0);
+  if(catEntries.length){
+    catEntries.sort((a,b)=>b[1]-a[1]);
+    document.getElementById("sum-max-cat").textContent = catEntries[0][0]+" · "+fmtThb(catEntries[0][1]);
+    document.getElementById("sum-min-cat").textContent = catEntries[catEntries.length-1][0]+" · "+fmtThb(catEntries[catEntries.length-1][1]);
+  } else {
+    document.getElementById("sum-max-cat").textContent = "No data yet";
+    document.getElementById("sum-min-cat").textContent = "No data yet";
+  }
+
+  // highest/lowest day
+  const byDay = {};
+  paid.forEach(e=>{ byDay[e.date] = (byDay[e.date]||0)+e.amountThb; });
+  const dayEntries = Object.entries(byDay);
+  if(dayEntries.length){
+    dayEntries.sort((a,b)=>b[1]-a[1]);
+    document.getElementById("sum-max-day").textContent = dayEntries[0][0]+" · "+fmtThb(dayEntries[0][1]);
+    document.getElementById("sum-min-day").textContent = dayEntries[dayEntries.length-1][0]+" · "+fmtThb(dayEntries[dayEntries.length-1][1]);
+  } else {
+    document.getElementById("sum-max-day").textContent = "No data yet";
+    document.getElementById("sum-min-day").textContent = "No data yet";
+  }
+
+  // slideshow
+  setupSlideshow();
+}
+
+function setupSlideshow(){
+  clearInterval(slideTimer);
+  const photos = [...DATA.photos].sort((a,b)=>a.date.localeCompare(b.date)||a.createdAt-b.createdAt);
+  const ss = document.getElementById("slideshow");
+  const dotsWrap = document.getElementById("slide-dots");
+  const cap = document.getElementById("slide-cap");
+  if(!photos.length){
+    ss.querySelectorAll("img").forEach(i=>i.remove());
+    dotsWrap.innerHTML = "";
+    cap.textContent = "";
+    if(!ss.querySelector(".empty-slide")){
+      const e = document.createElement("div");
+      e.className = "empty-slide";
+      e.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--text-faint);";
+      e.innerHTML = `<div style="width:30px;height:30px;margin-bottom:8px;">${ICONS.camera}</div><div style="font-size:13px;">No photos logged yet</div>`;
+      ss.appendChild(e);
+    }
+    return;
+  }
+  const existingEmpty = ss.querySelector(".empty-slide");
+  if(existingEmpty) existingEmpty.remove();
+  ss.querySelectorAll("img").forEach(i=>i.remove());
+  photos.forEach((p,i)=>{
+    const img = document.createElement("img");
+    img.src = p.dataUrl;
+    img.dataset.idx = i;
+    ss.appendChild(img);
+  });
+  dotsWrap.innerHTML = photos.map((_,i)=>`<div class="seg" data-i="${i}"><i></i></div>`).join("");
+  slideIndex = 0;
+  showSlide(0, photos);
+  slideTimer = setInterval(()=>{
+    slideIndex = (slideIndex+1) % photos.length;
+    showSlide(slideIndex, photos);
+  }, 3200);
+}
+function showSlide(i, photos){
+  const ss = document.getElementById("slideshow");
+  ss.querySelectorAll("img").forEach(img=>img.classList.toggle("show", parseInt(img.dataset.idx)===i));
+  document.getElementById("slide-dots").querySelectorAll(".seg").forEach((seg,idx)=>{
+    seg.classList.toggle("done", idx<i);
+    seg.classList.toggle("active", idx===i);
+  });
+  document.getElementById("slide-cap").textContent = photos[i] ? photos[i].date : "";
+}
+document.getElementById("slide-prev").addEventListener("click", ()=>{
+  const photos = [...DATA.photos].sort((a,b)=>a.date.localeCompare(b.date)||a.createdAt-b.createdAt);
+  if(!photos.length) return;
+  clearInterval(slideTimer);
+  slideIndex = (slideIndex-1+photos.length)%photos.length;
+  showSlide(slideIndex, photos);
+  slideTimer = setInterval(()=>{ slideIndex=(slideIndex+1)%photos.length; showSlide(slideIndex, photos); }, 3200);
+});
+document.getElementById("slide-next").addEventListener("click", ()=>{
+  const photos = [...DATA.photos].sort((a,b)=>a.date.localeCompare(b.date)||a.createdAt-b.createdAt);
+  if(!photos.length) return;
+  clearInterval(slideTimer);
+  slideIndex = (slideIndex+1)%photos.length;
+  showSlide(slideIndex, photos);
+  slideTimer = setInterval(()=>{ slideIndex=(slideIndex+1)%photos.length; showSlide(slideIndex, photos); }, 3200);
+});
+// swipe support
+(function(){
+  const ss = document.getElementById("slideshow");
+  let startX = null;
+  ss.addEventListener("touchstart", e=>{ startX = e.touches[0].clientX; }, {passive:true});
+  ss.addEventListener("touchend", e=>{
+    if(startX===null) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    if(Math.abs(dx) > 40){
+      document.getElementById(dx<0 ? "slide-next" : "slide-prev").click();
+    }
+    startX = null;
+  }, {passive:true});
+})();
+
+/* =========================================================
+   EXPORT / IMPORT
+   ========================================================= */
+document.getElementById("export-btn").addEventListener("click", ()=>{
+  const blob = new Blob([JSON.stringify(DATA, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = todayStr();
+  a.href = url; a.download = `sabai-trip-backup-${stamp}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  toast("Export downloaded");
+});
+document.getElementById("import-btn").addEventListener("click", ()=>{
+  document.getElementById("import-file").click();
+});
+document.getElementById("import-file").addEventListener("change", (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const parsed = JSON.parse(reader.result);
+      if(!parsed || typeof parsed !== "object") throw new Error("bad format");
+      openModal(`
+        <div class="modal-title">Import backup?</div>
+        <div style="font-size:13.5px;color:var(--text-dim);margin-bottom:16px;">
+          This file contains ${(parsed.expenses||[]).length} expenses, ${(parsed.photos||[]).length} photos,
+          ${(parsed.calendarEvents||[]).length} events. Importing will <b>replace</b> all current data on this device.
+        </div>
+        <div class="row" style="gap:8px;">
+          <button class="btn secondary" style="flex:1;" id="import-cancel">Cancel</button>
+          <button class="btn" style="flex:1;" id="import-confirm">Replace data</button>
+        </div>
+      `);
+      document.getElementById("import-cancel").addEventListener("click", closeModal);
+      document.getElementById("import-confirm").addEventListener("click", ()=>{
+        DATA = Object.assign(defaultData(), parsed);
+        DATA.settings = Object.assign(defaultData().settings, parsed.settings||{});
+        saveData();
+        closeModal();
+        toast("Data restored");
+        goScreen("home");
+      });
+    }catch(err){
+      toast("That file doesn't look like a valid backup");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+});
+
+/* =========================================================
+   INIT
+   ========================================================= */
+updateClocks();
+renderHome();
+goScreen("home");
+
+// Register service worker for offline installability (no-op over file:// or if unsupported)
+if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch((err) => {
+      console.warn("Service worker registration failed:", err);
+    });
+  });
+}
+
+})();
+</script>
+</body>
+</html>
