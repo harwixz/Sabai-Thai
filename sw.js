@@ -1,9 +1,10 @@
 // Sabai — offline service worker
 // Cache-first so the whole app works with no signal in Thailand.
-const CACHE_NAME = "sabai-cache-v6";
+const CACHE_NAME = "sabai-cache-v7";
 const CORE_ASSETS = [
   "./",
   "./index.html",
+  "./app.js",
   "./manifest.json",
   "./icon-180.png",
   "./icon-192.png",
@@ -59,7 +60,6 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// Open the app when user taps a notification
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   event.waitUntil(
