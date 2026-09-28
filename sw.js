@@ -1,6 +1,6 @@
 // Sabai — offline service worker
 // Cache-first so the whole app works with no signal in Thailand.
-const CACHE_NAME = "sabai-cache-v5";
+const CACHE_NAME = "sabai-cache-v6";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -51,7 +51,7 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(() => {
           if (event.request.mode === "navigate") {
-            return caches.match("./index.html").then((r) => r || caches.match("./"));
+            return caches.match("./index.html").then((r) => r || caches.match("./"))
           }
           return cached;
         });
