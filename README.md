@@ -11,15 +11,14 @@ Offline-first Progressive Web App for a Thailand trip: money, phrases, photos, p
 
 ## Live / Pages
 
-If GitHub Pages is enabled for this repo, open:
-
 **https://harwixz.github.io/Sabai-Thai/**
 
 ## Files
 
 | File | Role |
 |------|------|
-| `index.html` | Full app |
+| `index.html` | App shell (UI) |
+| `app.js` | App logic |
 | `manifest.json` | PWA manifest |
 | `sw.js` | Offline cache |
 | `icon-*.png` | App icons |
@@ -28,45 +27,31 @@ If GitHub Pages is enabled for this repo, open:
 
 ## Features
 
-- **Home** — clocks, wallet (cash + bank), budget left, photo of the day, checklist, emergency strip, blog link
+- **Home** — clocks, wallet, **clear budget** (pool / received / spent / left), photo of the day, checklist, emergency
 - **Talk** — Thai phrasebook with ★ Liked on top
-- **Spend** — expenses, quick-add chips, wallet link (cash/card)
-- **Pics** — gallery *or* camera, pick photo date, captions, streak, compression
-- **More** — Money converter, Calendar, Places, Recap, content reminders, income from parents, emergency editor, trip dates
+- **Spend** — expenses, quick-add, wallet link
+- **Pics** — gallery or camera, photo date, captions, streak
+- **More** — Money, Calendar, Places, Recap, **Content plan** (TikTok), **Money history**, income, emergency, trip dates
 
-### Money
+### Budget
 
-- Log spending in THB or EUR  
-- Choose **paid from cash / bank / neither** so the wallet stays accurate  
-- **Money received** (e.g. from parents) adds to cash or bank  
-- Recap shows totals in **฿ and €**
+Shows trip money (wallet + spent), money received (e.g. parents), spent so far, and **left in wallet** with a progress bar.
+
+### Content plan
+
+TikTok / video ideas: **Idea → Filmed → Posted**.
+
+### Money history
+
+All in/out movements with filters: All · Received · Spent.
 
 ### Reminders
 
-Local times: **07:00 · 13:00 · 18:00 · 20:00**
+Local times: **07:00 · 13:00 · 18:00 · 20:00** (when the app can notify).
 
-- Photo / checklist nudges  
-- TikTok & video content reminders (toggle in **More**)  
-
-> Browser PWAs cannot guarantee background alarms when the OS kills the page. Reminders fire reliably when the app is open, and on the next open if a slot was missed.
-
-### Emergency
-
-- Tourist Police **1155**  
-- Your hotel, allergies, notes (editable in Recap / More)
-
-### Backup
-
-- **Export JSON** — full restore  
-- **Export summary** — readable `.txt` trip report  
-
-## Privacy
+### Privacy
 
 All data stays on your device (`localStorage`). No account, no server.
-
-## Theme
-
-Toggle light / dark from the top bar. Preference is saved.
 
 ## License
 
