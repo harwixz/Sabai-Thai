@@ -1,4 +1,4 @@
-const CACHE_NAME="sabai-cache-v9";
+const CACHE_NAME="sabai-cache-v10";
 const CORE=["./","./index.html","./manifest.json","./icon-180.png","./icon-192.png","./icon-512.png","./sw.js","./g_0.txt","./g_1.txt","./g_2.txt","./g_3.txt","./g_4.txt","./g_5.txt","./g_6.txt","./g_7.txt","./g_8.txt","./g_9.txt","./g_10.txt","./g_11.txt","./g_12.txt","./g_13.txt","./g_14.txt"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(CORE).catch(()=>{})));self.skipWaiting();});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))));self.clients.claim();});

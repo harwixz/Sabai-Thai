@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <title>Sabai</title>
 <meta name="theme-color" content="#000000">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
-body{margin:0;background:#0a0a0c;color:#F1EDE4;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh}
+body{margin:0;background:#0a0a0c;color:#F1EDE4;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh;min-height:100dvh}
 .box{text-align:center;padding:24px}
 .spin{width:28px;height:28px;border:3px solid #333;border-top-color:#E3B24C;border-radius:50%;margin:0 auto 16px;animation:s .8s linear infinite}
 @keyframes s{to{transform:rotate(360deg)}}
@@ -24,8 +24,8 @@ body{margin:0;background:#0a0a0c;color:#F1EDE4;font-family:system-ui;display:fle
     let b64 = "";
     for (let i = 0; i < n; i++) {
       const r = await fetch("./g_" + i + ".txt");
-      if (!r.ok) throw new Error("g_" + i);
-      b64 += await r.text();
+      if (!r.ok) throw new Error("g_" + i + " missing");
+      b64 += (await r.text()).trim();
     }
     const bin = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
     const ds = new DecompressionStream("gzip");
@@ -35,7 +35,7 @@ body{margin:0;background:#0a0a0c;color:#F1EDE4;font-family:system-ui;display:fle
     document.write(html);
     document.close();
   } catch (e) {
-    document.body.innerHTML = '<div class="box"><p>Load failed: ' + e.message + '</p><p>Try refreshing, or upload the full index.html from the zip.</p></div>';
+    document.body.innerHTML = '<div class="box"><p>Load failed: ' + e.message + '</p><p>Hard-refresh or reinstall the app.</p></div>';
   }
 })();
 </script>

@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.4.1 — 2026-09-28
+
+### Fixed
+- **Mobile bottom nav** fits phone screens (narrow widths, home-indicator / safe-area)
+- Removed double safe-area padding that pushed the bar too high
+- Nav tabs share width flexibly (no fixed min-width overflow)
+- Tighter padding on small screens (≤380px)
+- FAB and toast sit correctly above the bar
+- No horizontal overflow (`max-width: 100vw`)
+
 ## v1.4.0 — 2026-09-28
 
 ### Added
@@ -13,37 +23,22 @@
 - **Recap totals** show both **BAHT and EURO**
 - **Navbar** reduced to 5 tabs (Home · Talk · Spend · Pics · More)
 - **Wallet auto-updates** when you log spending (cash or bank)
-- **Setup is editable** — Edit trip dates + Re-run setup in Recap / More
-- **Photo date** — choose any date when adding from gallery or camera
+- **Setup is editable** — Edit trip dates + Re-run setup
+- **Photo date** — choose any date when adding photos
 
 ### Added
-- **Emergency card** on Home + editor · Tourist Police 1155
-- **Expense → wallet link** — Paid from: cash / bank / neither
+- **Emergency card** · Tourist Police 1155
+- **Expense → wallet link** — Paid from cash / bank / neither
 - **Budget remaining** on Home and Recap
 - **Money received** (parents / funding)
 - **Export readable summary** (`.txt`)
 - **Content reminders** for TikTok / video
-- **Scheduled local reminders** at 7:00, 13:00, 18:00, 20:00
-- **More** hub for Money, Calendar, Places, Recap, settings
+- **Scheduled local reminders** at **7:00, 13:00, 18:00, 20:00**
+- **More** hub for secondary screens
 
 ### Design
-- Fewer competing gold accents, more section spacing, shorter nav labels
-- Clearer focus outlines, light theme contrast, soft motion only (no sound)
+- ADHD-friendly spacing, soft motion only (no sound)
+- Light / dark theme, focus states, calmer gold accents
 
 ### Docs
-- README + this changelog
-
-### Offline cache
-- Service worker **v7**
-
-## v1.2.0 — 2026-09-28
-
-Setup wizard, wallet, theme toggle, checklist, quick expenses, places, photo compression, captions, streak, sticky Liked, ambient ADHD-friendly design.
-
-## v1.1.0 — 2026-09-28
-
-Photo reminders, blog link, liked phrases on top, expanded phrasebook, GitHub Pages index.html.
-
-## v1.0.0
-
-Initial offline companion.
+- `README.md` · this changelog
