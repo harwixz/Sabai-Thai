@@ -1,13 +1,18 @@
 # Sabai — Thailand Trip Companion
 
-**Live:** https://harwixz.github.io/Sabai-Thai/
+Offline PWA for your Thailand trip: clocks, currency, phrases, wallet, photos, checklist, content plan.
 
-Offline-first PWA. Works on **macOS Monterey / Safari 15** (v1.4.2).
+## Open the app
+**https://harwixz.github.io/Sabai-Thai/**
+
+Works offline after first load. Compatible with **macOS Monterey / Safari 15** (plain JS loader, no DecompressionStream).
 
 ## Install
-1. Open the live link
-2. Add to Home Screen / Dock
-3. Use offline after first load
+- **Phone:** Open in Chrome → Add to Home Screen  
+- **Mac:** Safari → File → Add to Dock, or open the HTML offline file
+
+## Features
+Setup · Wallet (cash + bank) · Budget · Expenses & income history · Phrasebook · Photo of the day · Content plan (TikTok) · Emergency · Dark/light theme · Export
 
 ## Changelog
-See [CHANGELOG.md](./CHANGELOG.md)
+See [CHANGELOG.md](CHANGELOG.md)
