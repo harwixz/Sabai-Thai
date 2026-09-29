@@ -1,15 +1,11 @@
 # Changelog
 
-## v1.4.4 — 2026-09-29
+## v1.4.5 — 2026-09-29
 
 ### Added
-- **Reset all data** (More → Reset app) with confirmation
-- **Sync between devices**: Download JSON, Copy JSON, Share backup, Import file, Paste JSON
-- Clearer backup section on More screen
+- **Wallet dual currency**: Cash & Bank show **THB and EUR**
+- Edit wallet: switch **EUR / THB** when entering amounts (rate from settings)
+- Budget card shows Baht + Euro side by side
 
-### Fixed
-- Import replaces full dataset (expenses, photos, wallet, plan, …)
-- Cache **v14** / `sw-v14.js`
-
-## v1.4.3 — 2026-09-29
-- Service Worker syntax fix for offline on phone & Mac
+## v1.4.4 — 2026-09-29
+- Reset app + JSON sync (copy / share / paste / import)
