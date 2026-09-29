@@ -1,5 +1,5 @@
-const CACHE_NAME="sabai-cache-v11";
-const CORE=["./","./index.html","./style.css","./manifest.json","./icon-180.png","./icon-192.png","./icon-512.png","./sw.js","./js_0.txt","./js_1.txt","./js_2.txt","./js_3.txt","./js_4.txt","./js_5.txt","./js_6.txt","./js_7.txt","./js_8.txt","./js_9.txt","./js_10.txt","./js_11.txt","./js_12.txt","./js_13.txt","./js_14.txt","./js_15.txt"];
+const CACHE_NAME="sabai-cache-v12";
+const CORE=["./","./index.html","./manifest.json","./icon-180.png","./icon-192.png","./icon-512.png","./sw.js","./h_0.txt","./h_1.txt","./h_2.txt","./h_3.txt","./h_4.txt","./h_5.txt","./h_6.txt","./h_7.txt","./h_8.txt","./h_9.txt","./h_10.txt","./h_11.txt"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(CORE).catch(()=>{})));self.skipWaiting();});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))));self.clients.claim();});
 self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).then(r=>{if(r&&r.ok&&e.request.url.startsWith(self.location.origin)){const x=r.clone();caches.open(CACHE_NAME).then(cache=>cache.put(e.request,x));}return r;}).catch(()=>e.request.mode==="navigate"?caches.match("./index.html"):c)));});

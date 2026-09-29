@@ -7,10 +7,12 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="icon-180.png">
+<style>body{margin:0;background:#0a0a0c;color:#e8e6e3;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh}</style>
 </head><body>
+<p id="st">Loading Sabai…</p>
 <script>
 (function(){
-  var n = 6;
+  var n = 12;
   var parts = [];
   var i = 0;
   function next(){
@@ -24,14 +26,15 @@
     x.open("GET", "./h_" + i + ".txt", true);
     x.onload = function(){
       if(x.status !== 200){
-        document.body.innerHTML = "<p style=\"color:#fff;padding:20px;font-family:system-ui;background:#0a0a0c\">Load failed: h_" + i + "</p>";
+        document.getElementById("st").textContent = "Load failed: h_" + i + " (" + x.status + ")";
         return;
       }
       parts.push(x.responseText);
       i++;
+      document.getElementById("st").textContent = "Loading Sabai… " + i + "/" + n;
       next();
     };
-    x.onerror = function(){ document.body.innerHTML = "<p style=\"color:#fff;padding:20px\">Network error</p>"; };
+    x.onerror = function(){ document.getElementById("st").textContent = "Network error on h_" + i; };
     x.send();
   }
   next();
