@@ -12,6 +12,9 @@
 <p id="st">Loading Sabai…</p>
 <script>
 (function(){
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(function(){});
+  }
   var n = 70;
   var parts = [];
   var i = 0;
