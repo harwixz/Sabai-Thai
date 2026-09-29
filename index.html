@@ -13,7 +13,11 @@
 <script>
 (function(){
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?v=13').catch(function(){});
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      regs.forEach(function(r){ r.unregister(); });
+    }).catch(function(){}).then(function(){
+      return navigator.serviceWorker.register('./sw-v13.js');
+    }).catch(function(){});
   }
   var n = 70;
   var parts = [];
