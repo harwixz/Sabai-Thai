@@ -12,29 +12,34 @@
 <p id="st">Loading Sabai…</p>
 <script>
 (function(){
-  var n = 12;
+  var n = 13;
   var parts = [];
   var i = 0;
   function next(){
     if(i >= n){
-      document.open();
-      document.write(parts.join(""));
-      document.close();
+      try {
+        var html = decodeURIComponent(escape(atob(parts.join(""))));
+        document.open();
+        document.write(html);
+        document.close();
+      } catch(e) {
+        document.getElementById("st").textContent = "Decode failed: " + e.message;
+      }
       return;
     }
     var x = new XMLHttpRequest();
-    x.open("GET", "./h_" + i + ".txt", true);
+    x.open("GET", "./b_" + i + ".txt", true);
     x.onload = function(){
       if(x.status !== 200){
-        document.getElementById("st").textContent = "Load failed: h_" + i + " (" + x.status + ")";
+        document.getElementById("st").textContent = "Load failed: b_" + i + " (" + x.status + ")";
         return;
       }
-      parts.push(x.responseText);
+      parts.push(x.responseText.replace(/\s/g,""));
       i++;
       document.getElementById("st").textContent = "Loading Sabai… " + i + "/" + n;
       next();
     };
-    x.onerror = function(){ document.getElementById("st").textContent = "Network error on h_" + i; };
+    x.onerror = function(){ document.getElementById("st").textContent = "Network error on b_" + i; };
     x.send();
   }
   next();

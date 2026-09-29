@@ -1,5 +1,5 @@
 const CACHE_NAME="sabai-cache-v12";
-const CORE=["./","./index.html","./manifest.json","./icon-180.png","./icon-192.png","./icon-512.png","./sw.js","./h_0.txt","./h_1.txt","./h_2.txt","./h_3.txt","./h_4.txt","./h_5.txt","./h_6.txt","./h_7.txt","./h_8.txt","./h_9.txt","./h_10.txt","./h_11.txt"];
+const CORE=["./","./index.html","./manifest.json","./icon-180.png","./icon-192.png","./icon-512.png","./sw.js","./b_0.txt","./b_1.txt","./b_2.txt","./b_3.txt","./b_4.txt","./b_5.txt","./b_6.txt","./b_7.txt","./b_8.txt","./b_9.txt","./b_10.txt","./b_11.txt","./b_12.txt"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(CORE).catch(()=>{})));self.skipWaiting();});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))));self.clients.claim();});
 self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).then(r=>{if(r&&r.ok&&e.request.url.startsWith(self.location.origin)){const x=r.clone();caches.open(CACHE_NAME).then(cache=>cache.put(e.request,x));}return r;}).catch(()=>e.request.mode==="navigate"?caches.match("./index.html"):c)));});
