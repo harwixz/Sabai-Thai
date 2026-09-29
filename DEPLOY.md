@@ -1,15 +1,21 @@
-# Deploy v1.4.0
+# Deploy Sabai to GitHub Pages
 
-Upload these two files from the release zip to the repo root (overwrite):
+## One-shot update (recommended)
 
-1. `index.html`
-2. `app.js`
+1. Download **Sabai-GitHub-FULL-v145.zip**
+2. Unzip locally
+3. On https://github.com/harwixz/Sabai-Thai → **Add file → Upload files**
+4. Drag **all** files from the zip (overwrite existing)
+5. Commit message: `v1.4.5 full payload`
+6. Wait ~1 minute for Pages
+7. Open https://harwixz.github.io/Sabai-Thai/ and hard-refresh
 
-Already on GitHub: README, CHANGELOG, manifest, sw.js (v7), icons.
+## What must be at repo root
+- `index.html` (loader, n=73)
+- `sw-v15.js`
+- `b_0.txt` … `b_72.txt`
+- `manifest.json`, icons
+- `CHANGELOG.md`, `README.md`
 
-After upload, open https://harwixz.github.io/Sabai-Thai/ once to refresh the offline cache.
-
-## What's new in v1.4.0
-- Clearer budget (pool / received / spent / left)
-- Content plan (TikTok: idea → filmed → posted)
-- Money history (income + expenses)
+## After update on phone/Mac
+Clear site data for `harwixz.github.io`, then reload.
