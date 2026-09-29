@@ -1,18 +1,34 @@
 # Sabai — Thailand Trip Companion
 
-Offline PWA for your Thailand trip: clocks, currency, phrases, wallet, photos, checklist, content plan.
+Offline-first PWA for a Thailand trip: clocks, currency, phrasebook, wallet (THB + EUR), expenses, photos, checklist, content plan.
 
-## Open the app
-**https://harwixz.github.io/Sabai-Thai/**
+**Live:** https://harwixz.github.io/Sabai-Thai/
 
-Works offline after first load. Compatible with **macOS Monterey / Safari 15** (plain JS loader, no DecompressionStream).
-
-## Install
-- **Phone:** Open in Chrome → Add to Home Screen  
-- **Mac:** Safari → File → Add to Dock, or open the HTML offline file
+## Devices
+- Phone (e.g. Samsung S25 / Chrome) — Add to Home Screen
+- Mac (incl. **macOS Monterey 12.7 / Safari 15**)
+- Works offline after first successful load
 
 ## Features
-Setup · Wallet (cash + bank) · Budget · Expenses & income history · Phrasebook · Photo of the day · Content plan (TikTok) · Emergency · Dark/light theme · Export
+- Setup (trip dates, starting money)
+- Wallet: cash + bank/card in **Baht & Euro**
+- Expenses, income (e.g. parents), budget remaining
+- Phrasebook with favorites
+- Photo of the day + streak
+- Daily checklist & content plan (TikTok)
+- Emergency card
+- **JSON backup / restore** between devices
+- **Reset app** (wipe local data)
+- Dark / light theme
+
+## Sync (phone ↔ Mac)
+1. More → **Download JSON** or **Share backup**
+2. On the other device: **Import JSON** or **Paste JSON**
 
 ## Changelog
 See [CHANGELOG.md](CHANGELOG.md)
+
+## Tech
+- Single-page app, `localStorage`
+- Base64 chunk loader (Safari 15 compatible)
+- Service worker cache v15
