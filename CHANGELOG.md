@@ -1,23 +1,15 @@
 # Changelog
 
-## v1.4.3 — 2026-09-29
-
-### Fixed
-- **Service Worker syntax error** that blocked offline / PWA on phone and Mac
-- Cache bumped to **v13** so devices pick up the fix
-- Works on **Samsung S25** (Chrome) and **macOS Monterey 12.7** (Safari 15)
-
-## v1.4.2 — 2026-09-29
-
-### Fixed
-- macOS Monterey / Safari 15: plain base64 loader (no DecompressionStream)
-
-## v1.4.1 — 2026-09-28
-
-### Fixed
-- Mobile bottom nav fits phone screens
-
-## v1.4.0 — 2026-09-28
+## v1.4.4 — 2026-09-29
 
 ### Added
-- Clearer budget, content plan (TikTok), money history
+- **Reset all data** (More → Reset app) with confirmation
+- **Sync between devices**: Download JSON, Copy JSON, Share backup, Import file, Paste JSON
+- Clearer backup section on More screen
+
+### Fixed
+- Import replaces full dataset (expenses, photos, wallet, plan, …)
+- Cache **v14** / `sw-v14.js`
+
+## v1.4.3 — 2026-09-29
+- Service Worker syntax fix for offline on phone & Mac
